@@ -1,0 +1,1067 @@
+[
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000332.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000341.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "partsupp",
+    "filePath": "/data/000350.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000334.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "partsupp",
+    "filePath": "/data/000348.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000321.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000326.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000320.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000323.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000325.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "partsupp",
+    "filePath": "/data/000349.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000329.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000324.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000343.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000330.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000331.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000340.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000342.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "partsupp",
+    "filePath": "/data/000347.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "partsupp",
+    "filePath": "/data/000351.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "partsupp",
+    "filePath": "/data/000344.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000339.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "partsupp",
+    "filePath": "/data/000333.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "supplier",
+    "filePath": "/data/000320.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000312.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000313.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "lineitem",
+    "filePath": "/data/000314.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "lineitem",
+    "filePath": "/data/000315.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "lineitem",
+    "filePath": "/data/000322.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "lineitem",
+    "filePath": "/data/000337.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "lineitem",
+    "filePath": "/data/000338.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000363.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000364.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000367.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000368.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000369.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000370.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "lineitem",
+    "filePath": "/data/000371.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "lineitem",
+    "filePath": "/data/000396.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "lineitem",
+    "filePath": "/data/000397.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "lineitem",
+    "filePath": "/data/000398.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "lineitem",
+    "filePath": "/data/000399.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000400.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000401.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000402.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000405.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000406.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000407.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000408.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000409.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000410.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000411.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000412.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000413.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000414.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000415.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000416.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000417.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000418.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000419.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000420.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000421.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000422.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000423.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000424.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000628.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000629.sst"
+  },
+  {
+    "csdNum": "4",
+    "tableName": "lineitem",
+    "filePath": "/data/000630.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000631.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000632.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000633.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000634.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000635.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000636.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000637.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000638.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000639.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000640.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000641.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000642.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000643.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000644.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000645.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000646.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000647.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000648.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000649.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000650.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000651.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000652.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000653.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000654.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000655.sst"
+  },
+  {
+    "csdNum": "5",
+    "tableName": "lineitem",
+    "filePath": "/data/000656.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000657.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000658.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000659.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000660.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000661.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000662.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000663.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000664.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000665.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000666.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000667.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000668.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000669.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000670.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000671.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000672.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000673.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000674.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000675.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000676.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000677.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000678.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000679.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000680.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000681.sst"
+  },
+  {
+    "csdNum": "6",
+    "tableName": "lineitem",
+    "filePath": "/data/000682.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000683.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000684.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000685.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000686.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000687.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000688.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000689.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000690.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000691.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000692.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000693.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000694.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000695.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000696.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000697.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000698.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000699.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000700.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000701.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000702.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000703.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000704.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000705.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000706.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000707.sst"
+  },
+  {
+    "csdNum": "7",
+    "tableName": "lineitem",
+    "filePath": "/data/000708.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000709.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000710.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000711.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000712.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000713.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000714.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000715.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000716.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000717.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000718.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000719.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000720.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000721.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000722.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000723.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000724.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000725.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000726.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000727.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000728.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "lineitem",
+    "filePath": "/data/000744.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "nation",
+    "filePath": "/data/001034.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "part",
+    "filePath": "/data/001031.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "part",
+    "filePath": "/data/000316.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "part",
+    "filePath": "/data/000866.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "part",
+    "filePath": "/data/000320.sst"
+  },
+  {
+    "csdNum": "1",
+    "tableName": "part",
+    "filePath": "/data/000319.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "part",
+    "filePath": "/data/001034.sst"
+  },
+  {
+    "csdNum": "8",
+    "tableName": "region",
+    "filePath": "/data/001034.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "customer",
+    "filePath": "/data/000355.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "customer",
+    "filePath": "/data/000352.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "customer",
+    "filePath": "/data/000353.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "customer",
+    "filePath": "/data/000354.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "customer",
+    "filePath": "/data/000351.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000378.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000396.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000394.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000390.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000376.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000389.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000393.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000385.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000379.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000359.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000357.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000356.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000355.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000384.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000381.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000362.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000373.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000377.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000386.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000383.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000375.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000388.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000395.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000372.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000380.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000392.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000391.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000360.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000374.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000382.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000361.sst"
+  },
+  {
+    "csdNum": "3",
+    "tableName": "orders",
+    "filePath": "/data/000387.sst"
+  },
+  {
+    "csdNum": "2",
+    "tableName": "orders",
+    "filePath": "/data/000358.sst"
+  }
+]

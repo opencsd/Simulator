@@ -1,0 +1,299 @@
+[
+  {
+    "SST_NAME": "000378.sst",
+    "SST_VALUE_FILE": "000378.ss.rows",
+    "SST_KEY_FILE": "000378.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000396.sst",
+    "SST_VALUE_FILE": "000396.ss.rows",
+    "SST_KEY_FILE": "000396.sst.key",
+    "NUM_ROWS": 410000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000394.sst",
+    "SST_VALUE_FILE": "000394.ss.rows",
+    "SST_KEY_FILE": "000394.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000390.sst",
+    "SST_VALUE_FILE": "000390.ss.rows",
+    "SST_KEY_FILE": "000390.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000376.sst",
+    "SST_VALUE_FILE": "000376.ss.rows",
+    "SST_KEY_FILE": "000376.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000389.sst",
+    "SST_VALUE_FILE": "000389.ss.rows",
+    "SST_KEY_FILE": "000389.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000393.sst",
+    "SST_VALUE_FILE": "000393.ss.rows",
+    "SST_KEY_FILE": "000393.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000385.sst",
+    "SST_VALUE_FILE": "000385.ss.rows",
+    "SST_KEY_FILE": "000385.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000379.sst",
+    "SST_VALUE_FILE": "000379.ss.rows",
+    "SST_KEY_FILE": "000379.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000359.sst",
+    "SST_VALUE_FILE": "000359.ss.rows",
+    "SST_KEY_FILE": "000359.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000357.sst",
+    "SST_VALUE_FILE": "000357.ss.rows",
+    "SST_KEY_FILE": "000357.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000356.sst",
+    "SST_VALUE_FILE": "000356.ss.rows",
+    "SST_KEY_FILE": "000356.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000355.sst",
+    "SST_VALUE_FILE": "000355.ss.rows",
+    "SST_KEY_FILE": "000355.sst.key",
+    "NUM_ROWS": 51000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000384.sst",
+    "SST_VALUE_FILE": "000384.ss.rows",
+    "SST_KEY_FILE": "000384.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000381.sst",
+    "SST_VALUE_FILE": "000381.ss.rows",
+    "SST_KEY_FILE": "000381.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000362.sst",
+    "SST_VALUE_FILE": "000362.ss.rows",
+    "SST_KEY_FILE": "000362.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000373.sst",
+    "SST_VALUE_FILE": "000373.ss.rows",
+    "SST_KEY_FILE": "000373.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000377.sst",
+    "SST_VALUE_FILE": "000377.ss.rows",
+    "SST_KEY_FILE": "000377.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000386.sst",
+    "SST_VALUE_FILE": "000386.ss.rows",
+    "SST_KEY_FILE": "000386.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000383.sst",
+    "SST_VALUE_FILE": "000383.ss.rows",
+    "SST_KEY_FILE": "000383.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000375.sst",
+    "SST_VALUE_FILE": "000375.ss.rows",
+    "SST_KEY_FILE": "000375.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000388.sst",
+    "SST_VALUE_FILE": "000388.ss.rows",
+    "SST_KEY_FILE": "000388.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000395.sst",
+    "SST_VALUE_FILE": "000395.ss.rows",
+    "SST_KEY_FILE": "000395.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000372.sst",
+    "SST_VALUE_FILE": "000372.ss.rows",
+    "SST_KEY_FILE": "000372.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000380.sst",
+    "SST_VALUE_FILE": "000380.ss.rows",
+    "SST_KEY_FILE": "000380.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000392.sst",
+    "SST_VALUE_FILE": "000392.ss.rows",
+    "SST_KEY_FILE": "000392.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000391.sst",
+    "SST_VALUE_FILE": "000391.ss.rows",
+    "SST_KEY_FILE": "000391.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000360.sst",
+    "SST_VALUE_FILE": "000360.ss.rows",
+    "SST_KEY_FILE": "000360.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000374.sst",
+    "SST_VALUE_FILE": "000374.ss.rows",
+    "SST_KEY_FILE": "000374.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000382.sst",
+    "SST_VALUE_FILE": "000382.ss.rows",
+    "SST_KEY_FILE": "000382.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000361.sst",
+    "SST_VALUE_FILE": "000361.ss.rows",
+    "SST_KEY_FILE": "000361.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000387.sst",
+    "SST_VALUE_FILE": "000387.ss.rows",
+    "SST_KEY_FILE": "000387.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd3"
+  },
+  {
+    "SST_NAME": "000358.sst",
+    "SST_VALUE_FILE": "000358.ss.rows",
+    "SST_KEY_FILE": "000358.sst.key",
+    "NUM_ROWS": 469000,
+    "INDEX_NUMBER": 266,
+    "INDEX_NUMBER_HEX": "0000010A",
+    "CSD_NAME": "csd2"
+  }
+]

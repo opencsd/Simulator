@@ -1,0 +1,47 @@
+[
+  {
+    "SST_NAME": "000355.sst",
+    "SST_VALUE_FILE": "000355.ss.rows",
+    "SST_KEY_FILE": "000355.sst.key",
+    "NUM_ROWS": 299000,
+    "INDEX_NUMBER": 265,
+    "INDEX_NUMBER_HEX": "00000109",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000352.sst",
+    "SST_VALUE_FILE": "000352.ss.rows",
+    "SST_KEY_FILE": "000352.sst.key",
+    "NUM_ROWS": 336000,
+    "INDEX_NUMBER": 265,
+    "INDEX_NUMBER_HEX": "00000109",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000353.sst",
+    "SST_VALUE_FILE": "000353.ss.rows",
+    "SST_KEY_FILE": "000353.sst.key",
+    "NUM_ROWS": 335000,
+    "INDEX_NUMBER": 265,
+    "INDEX_NUMBER_HEX": "00000109",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000354.sst",
+    "SST_VALUE_FILE": "000354.ss.rows",
+    "SST_KEY_FILE": "000354.sst.key",
+    "NUM_ROWS": 335000,
+    "INDEX_NUMBER": 265,
+    "INDEX_NUMBER_HEX": "00000109",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000351.sst",
+    "SST_VALUE_FILE": "000351.ss.rows",
+    "SST_KEY_FILE": "000351.sst.key",
+    "NUM_ROWS": 195000,
+    "INDEX_NUMBER": 265,
+    "INDEX_NUMBER_HEX": "00000109",
+    "CSD_NAME": "csd2"
+  }
+]

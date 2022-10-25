@@ -1,0 +1,39 @@
+{
+  "type" : 0,
+  "snippet":
+  {
+    "queryID":20,
+    "workID":11,
+    "tableName": ["snippet20-11"],
+    "tableCol":[],
+    "tableFilter":[],
+    "tableOffset":[],
+    "tableOfflen":[],
+    "tableDatatype":[],
+    "tableAlias": "snippet20-11",
+    "columnAlias": [
+        "s_name",
+        "numwait"
+    ],
+    "columnProjection": [
+      {
+        "selectType": 0,
+        "value": ["s_name"],
+        "valueType": [10]
+      },
+      {
+        "selectType": 4,
+        "value": [],
+        "valueType": []
+      }
+    ],
+    "columnFiltering": [
+      ],
+    "groupBy": ["s_name"],
+    "orderBy": {
+      "ascending" : [0,1],
+      "columnName" : ["numwait","s_name"]
+    }
+  }
+
+}

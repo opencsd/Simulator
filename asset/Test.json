@@ -1,0 +1,111 @@
+{
+  "Table List": [
+    {
+      "tablename": "lineitem",
+      "Schema": [
+        {
+          "column_name": "l_orderkey",
+          "type": 3,
+          "length": 4,
+          "offset": 0
+        },
+        {
+          "column_name": "l_partkey",
+          "type": 3,
+          "length": 4,
+          "offset": 4
+        },
+        {
+          "column_name": "l_suppkey",
+          "type": 3,
+          "length": 4,
+          "offset": 8
+        },
+        {
+          "column_name": "l_linenumber",
+          "type": 3,
+          "length": 4,
+          "offset": 12
+        },
+        {
+          "column_name": "l_quantity",
+          "type": 246,
+          "length": 7,
+          "offset": 16
+        },
+        {
+          "column_name": "l_extendedprice",
+          "type": 246,
+          "length": 7,
+          "offset": 23
+        },
+        {
+          "column_name": "l_discount",
+          "type": 246,
+          "length": 7,
+          "offset": 30
+        },
+        {
+          "column_name": "l_tax",
+          "type": 246,
+          "length": 7,
+          "offset": 37
+        },
+        {
+          "column_name": "l_returnflag",
+          "type": 254,
+          "length": 1,
+          "offset": 44
+        },
+        {
+          "column_name": "l_linestatus",
+          "type": 254,
+          "length": 1,
+          "offset": 45
+        },
+        {
+          "column_name": "l_shipdate",
+          "type": 14,
+          "length": 3,
+          "offset": 46
+        },
+        {
+          "column_name": "l_commitdate",
+          "type": 14,
+          "length": 3,
+          "offset": 49
+        },
+        {
+          "column_name": "l_receiptdate",
+          "type": 14,
+          "length": 3,
+          "offset": 52
+        },
+        {
+          "column_name": "l_shipinstruct",
+          "type": 254,
+          "length": 25,
+          "offset": 55
+        },
+        {
+          "column_name": "l_shipmode",
+          "type": 254,
+          "length": 15,
+          "offset": 70
+        },
+        {
+          "column_name": "l_comment",
+          "type": 15,
+          "length": 44,
+          "offset": 85
+        }
+      ],
+      "SST List": [
+        {
+          "filename": "000312.sst",
+          "Block List": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "type" : 0,
+  "snippet":
+  {
+    "queryID":19,
+    "workID":6,
+    "tableName": ["snippet19-3","snippet19-5"],
+    "tableCol":[],
+    "tableFilter":[
+      {
+        "LV": {
+          "type": [10],
+          "value": ["ps_availqty"]
+      },
+      "Operator" : 3, 
+      "RV" : {
+          "type": [10],
+          "value": ["l_quantity"]
+        }
+      }
+    ],
+    "tableOffset":[],
+    "tableOfflen":[],
+    "tableDatatype":[],
+    "blockList":[],
+    "tableAlias": "snippet19-6",
+    "columnAlias": [
+        "ps_suppkey"
+    ],
+    "columnProjection": [
+      {
+        "selectType": 0,
+        "value": ["ps_suppkey"],
+        "valueType": [10]
+      }
+    ],
+    "columnFiltering": [],
+    "groupBy": []
+  }
+}

@@ -1,0 +1,209 @@
+[
+  {
+    "SST_NAME": "000332.sst",
+    "SST_VALUE_FILE": "000332.ss.rows",
+    "SST_KEY_FILE": "000332.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000341.sst",
+    "SST_VALUE_FILE": "000341.ss.rows",
+    "SST_KEY_FILE": "000341.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000350.sst",
+    "SST_VALUE_FILE": "000350.ss.rows",
+    "SST_KEY_FILE": "000350.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000334.sst",
+    "SST_VALUE_FILE": "000334.ss.rows",
+    "SST_KEY_FILE": "000334.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000348.sst",
+    "SST_VALUE_FILE": "000348.ss.rows",
+    "SST_KEY_FILE": "000348.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000321.sst",
+    "SST_VALUE_FILE": "000321.ss.rows",
+    "SST_KEY_FILE": "000321.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000326.sst",
+    "SST_VALUE_FILE": "000326.ss.rows",
+    "SST_KEY_FILE": "000326.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000320.sst",
+    "SST_VALUE_FILE": "000320.ss.rows",
+    "SST_KEY_FILE": "000320.sst.key",
+    "NUM_ROWS": 225000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000323.sst",
+    "SST_VALUE_FILE": "000323.ss.rows",
+    "SST_KEY_FILE": "000323.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000325.sst",
+    "SST_VALUE_FILE": "000325.ss.rows",
+    "SST_KEY_FILE": "000325.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000349.sst",
+    "SST_VALUE_FILE": "000349.ss.rows",
+    "SST_KEY_FILE": "000349.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000329.sst",
+    "SST_VALUE_FILE": "000329.ss.rows",
+    "SST_KEY_FILE": "000329.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000324.sst",
+    "SST_VALUE_FILE": "000324.ss.rows",
+    "SST_KEY_FILE": "000324.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000343.sst",
+    "SST_VALUE_FILE": "000343.ss.rows",
+    "SST_KEY_FILE": "000343.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000330.sst",
+    "SST_VALUE_FILE": "000330.ss.rows",
+    "SST_KEY_FILE": "000330.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000331.sst",
+    "SST_VALUE_FILE": "000331.ss.rows",
+    "SST_KEY_FILE": "000331.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000340.sst",
+    "SST_VALUE_FILE": "000340.ss.rows",
+    "SST_KEY_FILE": "000340.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000342.sst",
+    "SST_VALUE_FILE": "000342.ss.rows",
+    "SST_KEY_FILE": "000342.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000347.sst",
+    "SST_VALUE_FILE": "000347.ss.rows",
+    "SST_KEY_FILE": "000347.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000351.sst",
+    "SST_VALUE_FILE": "000351.ss.rows",
+    "SST_KEY_FILE": "000351.sst.key",
+    "NUM_ROWS": 152000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000344.sst",
+    "SST_VALUE_FILE": "000344.ss.rows",
+    "SST_KEY_FILE": "000344.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd2"
+  },
+  {
+    "SST_NAME": "000339.sst",
+    "SST_VALUE_FILE": "000339.ss.rows",
+    "SST_KEY_FILE": "000339.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  },
+  {
+    "SST_NAME": "000333.sst",
+    "SST_VALUE_FILE": "000333.ss.rows",
+    "SST_KEY_FILE": "000333.sst.key",
+    "NUM_ROWS": 363000,
+    "INDEX_NUMBER": 264,
+    "INDEX_NUMBER_HEX": "00000108",
+    "CSD_NAME": "csd1"
+  }
+]
