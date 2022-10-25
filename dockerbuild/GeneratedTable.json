@@ -19,7 +19,7 @@
           "column_name": "l_suppkey",
           "type": 3,
           "length": 4,
-          "offset": 9
+          "offset": 8
         },
         {
           "column_name": "l_linenumber",
