@@ -44,6 +44,7 @@ class MergeManager {
 struct FilterInfo {
   string table_filter;
   vector<string> table_col;  //스캔테이블
+  vector<int> filteredIndex;
   vector<char> postFix;
   vector<char> logicalOperators;
   vector<char> filterResults;
