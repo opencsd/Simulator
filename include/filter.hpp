@@ -43,11 +43,16 @@ class Filter {
   unordered_map<string, string> joinmap;
   char data[BUFF_SIZE];
   struct RowFilterData {
+    vector<string> forFilterColumn;
+    vector<opertype> forFilterOperators;
+    vector<string> forFilterValue;
+    vector<string> forFilterColumn2;
     vector<int> startoff;
     vector<int> offlen;
     vector<int> datatype;
     vector<string> ColName;
     vector<int> varcharlist;
+
     unordered_map<string, int> ColIndexmap;
     int offsetcount;
     int rowoffset;
