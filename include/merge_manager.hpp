@@ -33,7 +33,7 @@ class MergeManager {
   void MergeBlock(Result &result);
   void SendDataToBufferManager(MergeResult &mergedBlock);
   void push_work(Result result);
-  typeVar calculPostfix(Projection projectionInfo);
+  string calculPostfix(Projection projectionInfo, int index);
 
  private:
   unordered_map<pair_key, MergeResult, pair_hash>
@@ -52,7 +52,7 @@ struct FilterInfo {
   vector<bool> filterResults;
   vector<Projection> column_projection;  // select절 정보
   vector<int> projection_datatype;  //*컬럼 프로젝션 후 컬럼의 데이터타입
-  unordered_map<string, vector<typeVar>> mergedData;
+  unordered_map<string, vector<string>> mergedData;
   vector<string> columnAlias;
   vector<string> groupby_col;  // goup by절 정보
   bool need_col_filtering;
@@ -126,6 +126,8 @@ struct typeVar {
   string strVar;
   typeDate dateVar;
   typeDecimal doubleVar;
+  double mergedoubleVar;
+  typeVar() {}
   typeVar(int type_, const char *data, int len) : type(type_) {
     switch (type_) {
       case 1: {  // MySQL_BYTE
@@ -257,7 +259,7 @@ struct Result {
   FilterInfo filter_info;
   int row_count;
   unordered_map<string, vector<typeVar>> data;
-
+  Result() {}
   // scan, filter의 최초 생성자
   Result(int query_id_, int work_id_, string csd_name_, string table_name_,
          string sst_name_, FilterInfo filter_info_)

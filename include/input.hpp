@@ -332,9 +332,9 @@ struct Snippet {
           }
         }
       }
+      column_projection.push_back(Projection{ptype, aliasType, vlist, vtypes});
+      projection_datatype.push_back(projection_datatype_[i].GetInt());
     }
-    column_projection.push_back(Projection{ptype, aliasType, vlist, vtypes});
-    projection_datatype.push_back(projection_datatype_[i].GetInt());
 
     // filter 작업인 경우 확인
     Value &table_filter_ = document["tableFilter"];

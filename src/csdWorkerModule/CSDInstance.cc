@@ -29,7 +29,7 @@ int main(/*int argc, char **argv*/) {
   Filter filterManager(&mergeManager);
   Scan scanManager(CSDTableManager, &filterManager, &mergeManager);
 
-  thread ReturnInterface = thread(&Return::InitBuffer, &returnManager);
+  thread ReturnInterface = thread(&Return::ReturnResult, &returnManager);
   thread InputInterface = thread(&Scan::InputSnippet, &scanManager);
   // Scan scan = Scan(CSDTableManager);
   // scan.Scanning();
