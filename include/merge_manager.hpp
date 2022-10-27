@@ -6,14 +6,26 @@
 #include <string>
 
 #include "return.hpp"
+inline std::string& rtrim_(std::string& s, const char* t = " \t\n\r\f\v\0") {
+  s.erase(s.find_last_not_of(t) + 1);
+  return s;
+}
 
+inline std::string& ltrim_(std::string& s, const char* t = " \t\n\r\f\v\0") {
+  s.erase(0, s.find_first_not_of(t));
+  return s;
+}
+
+inline std::string& trim(std::string& s, const char* t = " \t\n\r\f\v\0") {
+  return ltrim_(rtrim_(s, t), t);
+}
 struct Result;
 
 typedef std::pair<int, int> pair_key;
 
 struct pair_hash {
   template <class T1, class T2>
-  std::size_t operator()(const std::pair<T1, T2> &pair) const {
+  std::size_t operator()(const std::pair<T1, T2>& pair) const {
     return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
   }
 };
@@ -24,23 +36,6 @@ struct T {
   int64_t varLong;
   float varFloat;
   double varDouble;
-};
-
-class MergeManager {
- public:
-  MergeManager(Return *returnManager) { this->returnManager = returnManager; }
-  void Merging();
-  void MergeBlock(Result &result);
-  void SendDataToBufferManager(MergeResult &mergedBlock);
-  void push_work(Result result);
-  string calculPostfix(Projection projectionInfo, int index);
-
- private:
-  unordered_map<pair_key, MergeResult, pair_hash>
-      m_MergeManager;  // key=<qid,wid>
-  Return *returnManager;
-  WorkQueue<Result> MergeQueue;
-  Result toMerge;
 };
 
 struct FilterInfo {
@@ -128,7 +123,7 @@ struct typeVar {
   typeDecimal doubleVar;
   double mergedoubleVar;
   typeVar() {}
-  typeVar(int type_, const char *data, int len) : type(type_) {
+  typeVar(int type_, const char* data, int len) : type(type_) {
     switch (type_) {
       case 1: {  // MySQL_BYTE
         intVar = (uint8_t)data[0];
@@ -273,4 +268,21 @@ struct Result {
   }
 
   void InitResult() { row_count = 0; }
+};
+
+class MergeManager {
+ public:
+  MergeManager(Return* returnManager) { this->returnManager = returnManager; }
+  void Merging();
+  void MergeBlock(Result& result);
+  void SendDataToBufferManager(MergeResult& mergedBlock);
+  void push_work(Result result);
+  string calculPostfix(Projection projectionInfo, int index);
+
+ private:
+  unordered_map<pair_key, MergeResult, pair_hash>
+      m_MergeManager;  // key=<qid,wid>
+  Return* returnManager;
+  WorkQueue<Result> MergeQueue;
+  Result toMerge;
 };

@@ -19,4 +19,5 @@ PRIVATE
 
 target_link_libraries(MergeQueryManager
         buffer_manager
+        
 )

@@ -30,4 +30,5 @@ target_link_libraries(SnippetManager
         TestModule
         boost_thread
         boost_system
+        
 )

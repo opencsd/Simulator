@@ -348,7 +348,7 @@ struct Snippet {
         } else {
           lv.isColumn.emplace_back(false);
         }
-        lv.value.emplace_back(table_filter_[i]["LV"]["value"][j]);
+        lv.value.emplace_back(table_filter_[i]["LV"]["value"][j].GetString());
       }
       for (int j = 0; j < table_filter_[i]["RV"]["type"].Size(); i++) {
         if (table_filter_[i]["RV"]["type"][j] == COLUMN) {
@@ -356,7 +356,7 @@ struct Snippet {
         } else {
           rv.isColumn.emplace_back(false);
         }
-        rv.value.emplace_back(table_filter_[i]["RV"]["value"][j]);
+        rv.value.emplace_back(table_filter_[i]["RV"]["value"][j].GetString());
       }
       tmpfilter.FilterOperator = table_filter_[i]["Operator"].GetInt();
       tmpfilter.LeftValue = lv;

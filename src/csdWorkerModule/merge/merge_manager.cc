@@ -15,19 +15,6 @@
 //                   FilterInfo filter_info, char* origin_row_data,
 //                   int* col_offset, char* dest, int projection_datatype);
 
-inline std::string& rtrim_(std::string& s, const char* t = " \t\n\r\f\v\0") {
-  s.erase(s.find_last_not_of(t) + 1);
-  return s;
-}
-
-inline std::string& ltrim_(std::string& s, const char* t = " \t\n\r\f\v\0") {
-  s.erase(0, s.find_first_not_of(t));
-  return s;
-}
-
-inline std::string& trim_(std::string& s, const char* t = " \t\n\r\f\v\0") {
-  return ltrim_(rtrim_(s, t), t);
-}
 void MergeManager::push_work(Result result) { MergeQueue.push_work(result); }
 void MergeManager::Merging() {
   // cout << "<-----------  Merge Layer Running...  ----------->\n";

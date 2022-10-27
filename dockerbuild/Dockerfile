@@ -10,5 +10,6 @@ RUN apt install -y curl build-essential
     
 COPY _output/CSDInstance ${OPERATOR}
 COPY GeneratedCSDTableManager.json /json_data/GeneratedCSDTableManager.json
+COPY GeneratedTable.json /json_data/GeneratedTable.json
 
 ENTRYPOINT ["/usr/local/bin/CSDInstance"]

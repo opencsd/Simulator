@@ -7,6 +7,12 @@ project(WALManager
 add_library(WALManager
         "WalManager.cc"        
 )
+target_link_libraries(WALManager
+        cpprest
+        boost_system
+        crypto
+        grpc_modules
+)
 
 target_include_directories(WALManager
 PUBLIC

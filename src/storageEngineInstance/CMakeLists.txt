@@ -22,7 +22,7 @@ add_subdirectory(WALManager)
 
 add_dependencies(QueryExecutor TableAccess TableManager)
 
-add_dependencies(SnippetScheduler CSDManager)
+add_dependencies(SnippetScheduler CSDManager WALManager)
 add_dependencies(buffer_manager TableManager SnippetScheduler)
 add_dependencies(MergeQueryManager buffer_manager)
 add_dependencies(SnippetManager MergeQueryManager)
