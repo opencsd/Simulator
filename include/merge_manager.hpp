@@ -283,6 +283,5 @@ class MergeManager {
   unordered_map<pair_key, MergeResult, pair_hash>
       m_MergeManager;  // key=<qid,wid>
   Return* returnManager;
-  WorkQueue<Result> MergeQueue;
-  Result toMerge;
+  WorkQueue<Result> MergeQueue Result toMerge;
 };
