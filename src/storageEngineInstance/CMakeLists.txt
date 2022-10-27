@@ -37,8 +37,6 @@ add_dependencies(EngineInstance StorageEngineInputInterface)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(EngineInstance
         grpc_modules
-        boost_system
-        stdc++fs
         ${storageEngineInstance_modules}
 )
 

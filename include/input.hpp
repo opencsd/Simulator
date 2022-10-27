@@ -86,6 +86,7 @@ typedef enum STACK_TYPE {
 
 struct Projection {
   int projection;  // KETI_SELECT_TYPE
+  int aliasType;
   vector<string> values;
   vector<int> types;  // KETI_ValueType
 };
@@ -272,33 +273,68 @@ struct Snippet {
       vlist.clear();
       vector<int> vtypes;
       vtypes.clear();
+      int aliasType = 0;
       Value &v = column_projection_[i]["value"];
       Value &vt = column_projection_[i]["valueType"];
       for (int j = 0; j < v.Size(); j++) {
         vlist.push_back(v[j].GetString());
-        vtypes.push_back(vt[j].GetInt());
+        int tmpType = vt[j].GetInt();
+        switch (tmpType) {
+          case 0: {
+            vtypes.push_back(tmpType);
+            aliasType = 0;
+            break;
+          }
+          case 1: {
+            vtypes.push_back(tmpType);
+            aliasType = 0;
+            break;
+          }
+          case 2: {
+            vtypes.push_back(tmpType);
+            aliasType = 0;
+            break;
+          }
+          case 3: {
+            vtypes.push_back(tmpType);
+            aliasType = 1;
+            break;
+          }
+          case 4: {
+            vtypes.push_back(tmpType);
+            aliasType = 4;
+            break;
+          }
+          case 5: {
+            vtypes.push_back(tmpType);
+            aliasType = 4;
+            break;
+          }
+          case 6: {
+            vtypes.push_back(tmpType);
+            aliasType = 4;
+            break;
+          }
+          case 7: {
+            vtypes.push_back(tmpType);
+            aliasType = 7;
+            break;
+          }
+          case 8: {
+            vtypes.push_back(tmpType);
+            aliasType = 0;
+            break;
+          }
+          case 9: {
+            vtypes.push_back(tmpType);
+            aliasType = 2;
+            break;
+          }
+        }
       }
-      column_projection.push_back(Projection{ptype, vlist, vtypes});
-      projection_datatype.push_back(projection_datatype_[i].GetInt());
     }
-
-    // //컬럼 필터링 후 테이블 스키마 정보 저장
-    // filtered_col.clear();
-    // filtered_datatype.clear();
-    // filtered_colindexmap.clear();
-    // Value &filter_col_ = document["columnFiltering"];
-    // if(filter_col_.Size() == 0){
-    //     filtered_col.assign(table_col.begin(),table_col.end());
-    //     filtered_datatype.assign(table_datatype.begin(),table_datatype.end());
-    // }else{
-    //   for(int i = 0; i < filter_col_.Size(); i++){
-    //     string col = filter_col_[i].GetString();
-    //     filtered_col.push_back(col);
-    //     int idx = colindexmap[col];
-    //     filtered_datatype.push_back(table_datatype[idx]);
-    //     filtered_colindexmap.insert({col,i});
-    //   }
-    // }
+    column_projection.push_back(Projection{ptype, aliasType, vlist, vtypes});
+    projection_datatype.push_back(projection_datatype_[i].GetInt());
 
     // filter 작업인 경우 확인
     Value &table_filter_ = document["tableFilter"];
@@ -327,59 +363,6 @@ struct Snippet {
       tmpfilter.RightValue = rv;
       table_filter.emplace_back(tmpfilter);
     }
-
-    // deleted key 확인
-    //  deleted_key.clear();
-    //  Value &deleted_key_ = document["deleteKey"];
-    //  is_deleted = false;
-    //  for(int i = 0; i < deleted_key_.Size(); i++){
-    //      is_deleted = true;
-    //      deleted_key.push_back(deleted_key_[i].GetString());
-    //      cout << "-" << deleted_key[i] << endl;
-    //  }
-
-    // wal inserted data 확인
-    //  inserted_key.clear();
-    //  inserted_value.clear();
-    //  is_inserted = false;
-    //  Value &inserted_key_ = document["unflushedRows"]["key"];
-    //  Value &inserted_value_ = document["unflushedRows"]["value"];
-    //  for(int i = 0; i < inserted_key_.Size(); i++){
-    //      is_inserted = true;
-    //      inserted_key.push_back(inserted_key_[i].GetString());
-    //      inserted_value.push_back(inserted_value_[i].GetString());
-    //      cout << "--" << inserted_key[i] << " " << inserted_value[i] << endl;
-    //  }
-
-    // //index scan인 경우 확인
-    // if(document.HasMember("index_pk")){
-    //   cout << "+++ index scan!! +++" << endl;
-    //   Value &index_pk_ = document["index_pk"];
-    //   Document small_document;
-    //   small_document.SetObject();
-    //   rapidjson::Document::AllocatorType& allocator =
-    //   small_document.GetAllocator();
-    //   small_document.AddMember("index_pk",index_pk_,allocator);
-    //   StringBuffer strbuf;
-    //   rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(strbuf);
-    //   small_document.Accept(writer);
-    //   index_pk = strbuf.GetString();
-    //   index_scan = true;
-    // }else{
-    //   cout << "no index pk" << endl;//나중에 지워도 됨
-    // }
-
-    // //pk가 있을 때 pk가 필요 컬럼인지 확인
-    // bool need_pk = false;
-    // std::list<PrimaryKey>::iterator iter;
-    // for(iter = primary_key_list.begin(); iter != primary_key_list.end();
-    // iter++){
-    //   if (*find(filtered_col.begin(), filtered_col.end(), (*iter).key_name)
-    //   == (*iter).key_name) {
-    //       need_pk = true;
-    //       break;
-    //   }
-    // }
 
     //스캔 타입 결정
     if (!index_scan && !only_scan) {
@@ -435,26 +418,3 @@ class WorkQueue {
     return ret;
   }
 };
-
-// int level_ = 0;
-// bool blocks_maybe_compressed_ = true;
-// bool blocks_definitely_zstd_compressed_ = false;
-// const bool immortal_table_ = false;
-// Slice cf_name_for_tracing_ = nullptr;
-// uint64_t sst_number_for_tracing_ = 0;
-// shared_ptr<Cache> to_block_cache_ = nullptr;//to_ = table_options
-// uint32_t to_read_amp_bytes_per_bit = 0;
-// //std::shared_ptr<const FilterPolicy> to_filter_policy = nullptr;
-// //std::shared_ptr<Cache> to_block_cache_compressed = nullptr;
-// bool to_cache_index_and_filter_blocks_ = false;
-// //ioptions
-// uint32_t footer_format_version_ = 5;//footer
-// int footer_checksum_type_ = 1;
-// uint8_t footer_block_trailer_size_ = 5;
-
-// //std::string dev_name = "/usr/local/rocksdb/000051.sst";
-// /*block info*/
-
-// std::string dev_name = "/dev/sda";
-// // const uint64_t handle_offset = 43673280512;
-// // const uint64_t block_size = 3995; //블록 사이즈 틀리지 않게!!

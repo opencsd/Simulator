@@ -33,12 +33,14 @@ class MergeManager {
   void MergeBlock(Result &result);
   void SendDataToBufferManager(MergeResult &mergedBlock);
   void push_work(Result result);
+  typeVar calculPostfix(Projection projectionInfo);
 
  private:
   unordered_map<pair_key, MergeResult, pair_hash>
       m_MergeManager;  // key=<qid,wid>
   Return *returnManager;
   WorkQueue<Result> MergeQueue;
+  Result toMerge;
 };
 
 struct FilterInfo {
@@ -118,6 +120,7 @@ struct typeDecimal {
 };
 struct typeVar {
   int type;
+  int keti_value_type;
   int intVar;
   __int64_t int64Var;
   string strVar;
@@ -128,11 +131,13 @@ struct typeVar {
       case 1: {  // MySQL_BYTE
         intVar = (uint8_t)data[0];
         type = 0;
+        keti_value_type = 0;
         break;
       }
       case 2: {  // MySQL_INT16
         intVar = static_cast<int>(((uint8_t)data[0]) | ((uint8_t)data[1] << 8));
         type = 0;
+        keti_value_type = 1;
         break;
       }
       case 3: {  // MySQL_INT32
@@ -140,6 +145,7 @@ struct typeVar {
                                   ((uint8_t)data[2] << 16) |
                                   ((uint8_t)data[3] << 24));
         type = 0;
+        keti_value_type = 2;
         break;
       }
       case 8: {  // MySQL_INT64
@@ -149,6 +155,7 @@ struct typeVar {
             ((uint8_t)data[4] << 32) | ((uint8_t)data[5] << 40) |
             ((uint8_t)data[6] << 48) | ((uint8_t)data[7] << 56));
         type = 1;
+        keti_value_type = 3;
         break;
       }
       case 4:  // MySQL_FLOAT32
@@ -166,6 +173,7 @@ struct typeVar {
         typeDecimal tmpdcm(tmpIntegerData, tmpFloatData);
         doubleVar = tmpdcm;
         type = 4;
+        keti_value_type = 6;
         break;
       }
       case 14: {  // MySQL_DATE
@@ -174,6 +182,7 @@ struct typeVar {
         dateVar.year =
             static_cast<int>(((uint8_t)data[1]) | ((uint8_t)data[2] << 8)) / 2;
         type = 3;
+        keti_value_type = 7;
         /* code */
         break;
       }
@@ -182,6 +191,7 @@ struct typeVar {
         break;
       case 254: {
         type = 2;
+        keti_value_type = 9;
         // char charVal[len + 1];
         // memcpy(charVal, data, len);
         // charVal[len] = '\0';
@@ -193,6 +203,7 @@ struct typeVar {
       }
       case 15: {  // MySQL_VARSTRING
         type = 2;
+        keti_value_type = 9;
         if (len > 255) {
           len = static_cast<int>(((uint8_t)data[0]) | ((uint8_t)data[1] << 8));
           // char charVal[len + 1];
@@ -220,6 +231,7 @@ struct typeVar {
   string getStrVal() { return strVar; }
   string getDateVal() { return dateVar.strconv(); }
   string getDoubleVal() { return doubleVar.printDecimal(); }
+  int getTypeForMerge() { return keti_value_type; }
   string getVal() {
     switch (type) {
       case 0:
