@@ -21,112 +21,60 @@ void Filter::push_work(Result filterResult) {
   FilterQueue.push_work(filterResult);
 }
 void Filter::Filtering() {
-  // cout << "<-----------  Filter Layer Running...  ----------->\n";
-  // key_t key = 12345;
-  // int msqid;
-  // message msg;
-  // msg.msg_type = 1;
-  // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-  // {
-  //     printf("msgget failed\n");
-  //     exit(0);
-  // }
   int cnt = 0;
   while (1) {
-    Result scanResult =
-        FilterQueue.wait_and_pop();  // ScanResult scanResult =
-                                     // FilterQueue.wait_and_pop();
-    // float temp_size = float(filterresult_.length) / float(1024);
+    Result scanResult = FilterQueue.wait_and_pop();
 
-    // string rowfilter = "Filtering Using Filter Queue : Work ID " +
-    // to_string(scanResult.work_id) + " Block ID " +
-    // to_string(scanResult.block_id) + " Row Num " + to_string(scanResult.rows)
-    // + " Filter Json " + scanResult.table_filter; strcpy(msg.msg,
-    // rowfilter.c_str()); if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-    // {
-    //     printf("msgsnd failed\n");
-    //     exit(0);
-    // }
-
-    //  cout << "Filtering Using Filter Queue : Work ID " << scanResult.work_id
-    //  << " Block ID " << scanResult.block_id <<" Row Num "<< scanResult.rows
-    //  << " Filter Json " << scanResult.table_filter << endl;
     BlockFilter(scanResult);
-    // test++;
   }
 }
 
 int Filter::BlockFilter(Result &scanResult) {
-  char *rowbuf = const_cast<char *>(
-      scanResult.data.c_str());  // char *rowbuf = scanResult.scan_buf;
   cout << "[CSD Filter] Start Filtering... (FileName : " << scanResult.sst_name
        << ")" << endl;
-  int filteroffset = 0;
 
-  // for(int i = 0; i < 2000; i ++){
-  //     cout << hex << (int)rowbuf[i] << endl;
-  // }
-  // string test(rowbuf);
-  // cout << test << endl;
-  // cout << scanResult.table_filter << endl;
   unordered_map<string, int> startptr;
   unordered_map<string, int> lengthRaw;
   unordered_map<string, int> typedata;
-  // column_filter = scanResult.filter_info.filtered_col;
-  /*cout << "[Filter]Start Filter :: (" << scanResult.result_block_count << "/"
-       << scanResult.total_block_count << ")" << endl;*/
-  // cout << "Filter check :: (" << scanResult.checkLast << ", "
-  //     << scanResult.total_block_count << ")" << endl;
+
   Result filterresult(scanResult.query_id, scanResult.work_id,
                       scanResult.csd_name, scanResult.table_name,
                       scanResult.sst_name, scanResult.filter_info);
 
-  // Result filterresult(scanResult.work_id, 0, 0, scanResult.csd_name,
-  // scanResult.filter_info,
-  //                     scanResult.total_block_count,
-  //                     scanResult.result_block_count,
-  //                     scanResult.last_valid_block_id);
-  // filterresult.column_name = scanResult.filter_info.column_filter;
-  int ColNum =
-      scanResult.filter_info.table_col
-          .size();  //컬럼 넘버로 컬럼의 수를 의미(스니펫을 통해 받은 컬럼의 수)
-  int RowNum =
-      scanResult
-          .row_count;  //로우 넘버로 로우의 수를 의미(스캔에서 받은 로우의 수)
+  filterresult.row_count = scanResult.row_count;
 
-  // vector<int> startoff = scanResult.table_offset;
-  // vector<int> offlen = scanResult.table_offlen;
-  vector<int> datatype = scanResult.filter_info.table_datatype;
-  // vector<string> ColName = scanResult.table_col; //스니펫을 통해 받은 각
-  // 컬럼의 이름이 저장되는 배열
-  vector<int> varcharlist;
-  // cout << "check filter" << endl;
   string str = scanResult.filter_info.table_filter;
   Document document;
   document.Parse(str.c_str());
-  // cout << "~!~!~!" << scanResult.table_filter << endl;
-  Value &filterarray = document["tableFilter"];
 
-  bool CV, TmpV;  // CV는 현재 연산의 결과, TmpV는 이전 연산 까지의 결과
-  bool Passed;  // and조건 이전이 f일 경우 연산을 생략하는 함수
-  bool isSaved, canSaved;  // or을 통해 저장이 되었는지, and 또는 or에서 저장이
-                           // 가능한지 를 나타내는 변수
-  bool isnot;          //이전 not operator를 만낫는지에 대한 변수
-  bool isvarchar = 0;  // varchar 형을 포함한 컬럼인지에 대한 변수
-
-  isvarchar = isvarc(datatype, ColNum, varcharlist);
-
-  // rowfilterdata(scanResult.table_offset, scanResult.table_offlen,
-  // scanResult.table_datatype, scanResult.table_col,
-  // varcharlist,scanResult.colindexmap);
-  rowfilterdata.ColIndexmap = scanResult.filter_info.colindexmap;
-  rowfilterdata.ColName = scanResult.filter_info.table_col;
-  rowfilterdata.datatype = scanResult.filter_info.table_datatype;
-  rowfilterdata.offlen = scanResult.filter_info.table_offlen;
-  rowfilterdata.startoff = scanResult.filter_info.table_offset;
-  rowfilterdata.rowbuf = const_cast<char *>(scanResult.data.c_str());
-  rowfilterdata.varcharlist = varcharlist;
-
+  auto filterarray = document["tableFilter"].GetArray();
+  int totalFilterSize = 0;
+  int operatorFilterSize = 0;
+  int variableFilterSize = 0;
+  for (auto it = filterarray.Begin(); it != filterarray.End(); it++) {
+    Value &filterInfo = *it;
+    int tmpTableName = filterInfo["Operator"].GetInt();
+    if (tmpTableName == AND || tmpTableName == OR) {
+      operatorFilterSize++;
+    } else {
+      variableFilterSize++;
+    }
+  }
+  totalFilterSize = operatorFilterSize + variableFilterSize;
+  filterresult.filter_info.postFix.reserve(totalFilterSize);
+  filterresult.filter_info.logicalOperators.reserve(operatorFilterSize);
+  filterresult.filter_info.filterResults.reserve(variableFilterSize);
+  for (auto it = filterarray.Begin(); it != filterarray.End(); it++) {
+    Value &filterInfo = *it;
+    int tmpTableName = filterInfo["Operator"].GetInt();
+    if (tmpTableName == AND) {
+      filterresult.filter_info.logicalOperators.emplace_back('&');
+    } else if (tmpTableName == OR) {
+      filterresult.filter_info.logicalOperators.emplace_back('|');
+    } else {
+      variableFilterSize++;
+    }
+  }
   bool substringflag;
   string tmpsubstring;
   // makedefaultmap(ColName, startoff, offlen, datatype, ColNum, startptr,

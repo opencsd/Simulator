@@ -104,6 +104,13 @@ void TableManager::InitTableInfo() {
       this->tableInfo[tmpTableName][colName] = kValue;
       this->schemaInfo[tmpTableName].emplace_back(colName);
     }
+    auto sstInfo = tblinfo["SST List"].GetArray();
+    for (auto j = sstInfo.Begin(); j != sstInfo.End(); j++) {
+      Value& sst = *j;
+      string sstName = sst["filename"].GetString();
+      int rowCnt = sst["rowCount"].GetInt();
+      this->sstRowCnt[tmpTableName][sstName] = rowCnt;
+    }
   }
 }
 void TableManager::InitCSDTableManager() {
@@ -124,4 +131,7 @@ int TableManager::GetSchemaLength(string tableName, string colName) {
 }
 int TableManager::GetSchemaType(string tableName, string colName) {
   return this->tableInfo[tableName][colName].type;
+}
+int TableManager::GetTableRow(string sstName, string tableName) {
+  return this->sstRowCnt[tableName][sstName];
 }

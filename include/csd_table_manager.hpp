@@ -19,6 +19,7 @@ class TableManager {
   vector<string> GetSchemaList(string tableName);
   int GetSchemaLength(string tableName, string colName);
   int GetSchemaType(string tableName, string colName);
+  int GetTableRow(string sstName, string tableName);
 
  private:
   struct KETIValue {
@@ -28,4 +29,5 @@ class TableManager {
   unordered_map<string, vector<string>> table_rep;
   unordered_map<string, vector<string>> schemaInfo;
   unordered_map<string, unordered_map<string, KETIValue>> tableInfo;
+  unordered_map<string, unordered_map<string, int>> sstRowCnt;
 };

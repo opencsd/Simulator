@@ -14,14 +14,6 @@ int current_block_count;
 char sep = 0x03;
 char gap = 0x20;
 char fin = 0x02;
-
-int row_count;
-
-int getPrimaryKeyData(const char* ikey_data, char* dest,
-                      list<PrimaryKey> pk_list);
-char* hexstr_to_char(const char* hexstr, int* row_size);
-string char_to_hexstr(const char* data, int len);
-
 inline Slice ExtractUserKey(const Slice& internal_key) {
   assert(internal_key.size() >= kNumInternalBytes_);
   return Slice(internal_key.data(), internal_key.size() - kNumInternalBytes_);
@@ -50,16 +42,13 @@ void Scan::Scanning() {
     Options options;
     SstFileReader sstFileReader(options);
 
-    FilterInfo filterInfo(snippet.table_col, snippet.table_offset,
-                          snippet.table_offlen, snippet.table_datatype,
-                          snippet.colindexmap, /*snippet.filtered_col,
-  snippet.filtered_datatype,*/ snippet.table_filter, snippet.column_projection,
-                          snippet.projection_datatype, snippet.groupby_col);
+    FilterInfo filterInfo(snippet.table_col, snippet.column_projection,
+                          snippet.projection_datatype, snippet.groupby_col,
+                          snippet.table_filter);
     Result scanResult(snippet.query_id, snippet.work_id, snippet.csd_name,
                       snippet.table_name, file_name, filterInfo);
 
     current_block_count = 0;
-    row_count = 0;
     check = true;
     index_valid = true;
 
@@ -98,18 +87,19 @@ void Scan::ScanFile(SstFileReader* sstBlockReader_, Snippet* snippet_,
   int block_log_cnt = 0;
   Iterator* datablock_iter = sstBlockReader_->NewIterator(ReadOptions());
   vector<string> colList = CSDTableManager_.GetSchemaList(snippet_->table_name);
+  int totalRows =
+      CSDTableManager_.GetTableRow(snippet_->sstfilename, snippet_->table_name);
+  bool IsFirstRow = true;
 
   for (datablock_iter->SeekToFirst(); datablock_iter->Valid();
        datablock_iter->Next()) {  // iterator first부터 순회
-    cout << "[CSD Scan] Scanning Data... (RowCNT : " << row_count << ")"
-         << endl;
+    // cout << "[CSD Scan] Scanning Data... (RowCNT : " << row_count << ")"
+    //      << endl;
     Status s = datablock_iter->status();
     if (!s.ok()) {
       cout << "Error reading the block - Skipped \n";
       break;
     }
-    const TableProperties* tableProperty =
-        sstBlockReader_->GetTableProperties().get();
     const Slice& key = datablock_iter->key();
     const Slice& value = datablock_iter->value();
 
@@ -123,81 +113,42 @@ void Scan::ScanFile(SstFileReader* sstBlockReader_, Snippet* snippet_,
     // cout << "KEY DATA : " << ikey_string << endl;
     if (ikey_string != snippet_->table_hex_key) {
       continue;
+    } else if (ikey_string == snippet_->table_hex_key && IsFirstRow) {
+      cout << "Row Size :: " << totalRows << endl;
+      scan_result->row_count = totalRows;
+      for (int i = 0; i < colList.size(); i++) {
+        string colName = colList[i];
+        scan_result->data[colName].reserve(totalRows);
+      }
+      IsFirstRow = false;
     }
-    row_count++;
+    for (int i = 0; i < colList.size(); i++) {
+      int schemaType =
+          CSDTableManager_.GetSchemaType(snippet_->table_name, colList[i]);
 
-    if (snippet_->primary_length != 0) {  // pk있으면 붙이기
-      char total_row_data[snippet_->primary_length + row_size];
-      int pk_length;
+      int schemaLength =
+          CSDTableManager_.GetSchemaLength(snippet_->table_name, colList[i]);
 
-      pk_length = getPrimaryKeyData(ikey_data, total_row_data,
-                                    snippet_->primary_key_list);  // key
+      if (schemaType == 15) {
+        if (schemaLength > 255) {
+          schemaLength = static_cast<int>(((uint8_t)row_data[0]) |
+                                          ((uint8_t)row_data[1] << 8));
+        } else {
+          schemaLength = static_cast<int>(((uint8_t)row_data[0]));
+        }
+      }
 
-      memcpy(total_row_data + pk_length, row_data, row_size);  // key+value
-      scan_result->data = scan_result->data + total_row_data;  // buff+key+value
-
-      scan_result->length += row_size + pk_length;
-      scan_result->row_count++;
-    } else {  //없으면 value만 붙이기
-      scan_result->row_offset.push_back(scan_result->length);
-      scan_result->data = scan_result->data + row_data;
-      scan_result->length += row_size;
-      scan_result->row_count++;
+      typeVar l_orderkey(schemaType, row_data, schemaLength);
+      row_data = row_data + schemaLength;
     }
   }
 }
 void Scan::EnQueueData(Result scan_result, int scan_type) {
   if (scan_type == Full_Scan_Filter) {
-    if (scan_result.length != 0) {  // scan->filter
-      filterManager->push_work(scan_result);
-    } else {  // scan->merge
-      mergeManager->push_work(scan_result);
-    }
-
-  } else if (scan_type == Full_Scan) {  // scan->merge
-    // if(scan_result.filter_info.need_col_filtering){
-    //   Column_Filtering(&scan_result, snippet_);
-    // }
-    mergeManager->push_work(scan_result);
-
-  } else if (scan_type == Index_Scan_Filter) {  // scan->filter
-    if (scan_result.length != 0) {
-      filterManager->push_work(scan_result);
-    } else {
-      mergeManager->push_work(scan_result);
-    }
-
-  } else {  // Index_Scan, scan->merge
-    // if(scan_result.filter_info.need_col_filtering){
-    //   Column_Filtering(&scan_result, snippet_);
-    // }
+    filterManager->push_work(scan_result);
+  } else if (scan_type == Full_Scan) {
     mergeManager->push_work(scan_result);
   }
-}
-
-char* hexstr_to_char(const char* hexstr, int* row_size) {
-  size_t len = strlen(hexstr);
-  if (len % 2 != 0) {
-    return NULL;
-  }
-  size_t final_len = len / 2;
-  char* chrs = (char*)malloc((final_len + 1) * sizeof(*chrs));
-  for (size_t i = 0, j = 0; j < final_len; i += 2, j++)
-    chrs[j] = (hexstr[i] % 32 + 9) % 25 * 16 + (hexstr[i + 1] % 32 + 9) % 25;
-  chrs[final_len] = '\0';
-  *row_size = static_cast<int>(final_len);
-  return chrs;
-}
-
-constexpr char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7',
-                           '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-string char_to_hexstr(const char* data, int len) {
-  std::string s(len * 2, ' ');
-  for (int i = 0; i < len; ++i) {
-    s[2 * i] = hexmap[(data[i] & 0xF0) >> 4];
-    s[2 * i + 1] = hexmap[data[i] & 0x0F];
-  }
-  return s;
 }
 
 void Scan::InputSnippet() {

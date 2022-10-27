@@ -1,11 +1,12 @@
 {
-  "type" : 0,
-  "snippet":
-  {
-    "queryID":0,
-    "workID":0,
-    "tableName": ["lineitem"],
-    "tableCol":[
+  "type": 0,
+  "snippet": {
+    "queryID": 0,
+    "workID": 0,
+    "tableName": [
+      "lineitem"
+    ],
+    "tableCol": [
       "l_orderkey",
       "l_partkey",
       "l_suppkey",
@@ -23,20 +24,28 @@
       "l_shipmode",
       "l_comment"
     ],
-    "tableFilter":[
+    "tableFilter": [
       {
         "LV": {
-          "type": [10],
-          "value": ["l_shipdate"]
-      },
-      "Operator" : 2, 
-      "RV" : {
-          "type": [7],
-          "value": ["1023247"]
+          "type": [
+            10
+          ],
+          "value": [
+            "l_shipdate"
+          ]
+        },
+        "Operator": 2,
+        "RV": {
+          "type": [
+            7
+          ],
+          "value": [
+            "1023247"
+          ]
         }
       }
     ],
-    "tableOffset":[
+    "tableOffset": [
       0,
       4,
       8,
@@ -54,7 +63,7 @@
       80,
       90
     ],
-    "tableOfflen":[
+    "tableOfflen": [
       4,
       4,
       4,
@@ -72,7 +81,7 @@
       10,
       44
     ],
-    "tableDatatype":[
+    "tableDatatype": [
       3,
       3,
       3,
@@ -92,71 +101,130 @@
     ],
     "tableAlias": "snippet0-0",
     "columnAlias": [
-        "l_returnflag", 
-        "l_linestatus",
-        "sum_qty",
-        "sum_base_price",
-        "sum_disc_price",
-        "sum_charge",
-        "avg_qty",
-        "avg_price",
-        "avg_disc"
+      "l_returnflag",
+      "l_linestatus",
+      "sum_qty",
+      "sum_base_price",
+      "sum_disc_price",
+      "sum_charge",
+      "avg_qty",
+      "avg_price",
+      "avg_disc"
     ],
     "columnProjection": [
       {
         "selectType": 0,
-        "value": ["l_returnflag"],
-        "valueType": [10]
+        "value": [
+          "l_returnflag"
+        ],
+        "valueType": [
+          10
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_linestatus"],
-        "valueType": [10]
+        "value": [
+          "l_linestatus"
+        ],
+        "valueType": [
+          10
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_quantity"],
-        "valueType": [10]
+        "value": [
+          "l_quantity"
+        ],
+        "valueType": [
+          10
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_extendedprice"],
-        "valueType": [10]
+        "value": [
+          "l_extendedprice"
+        ],
+        "valueType": [
+          10
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_extendedprice", "1", "l_discount","-","*"],
-        "valueType": [10,2,10,11,11]
+        "value": [
+          "l_extendedprice",
+          "1",
+          "l_discount",
+          "-",
+          "*"
+        ],
+        "valueType": [
+          10,
+          2,
+          10,
+          11,
+          11
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_extendedprice", "1", "l_discount","-","*","1","l_tax","+","*"],
-        "valueType": [10,2,10,11,11,2,10,11,11]
+        "value": [
+          "l_extendedprice",
+          "1",
+          "l_discount",
+          "-",
+          "*",
+          "1",
+          "l_tax",
+          "+",
+          "*"
+        ],
+        "valueType": [
+          10,
+          2,
+          10,
+          11,
+          11,
+          2,
+          10,
+          11,
+          11
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_quantity"],
-        "valueType": [10]
+        "value": [
+          "l_quantity"
+        ],
+        "valueType": [
+          10
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_extendedprice"],
-        "valueType": [10]
+        "value": [
+          "l_extendedprice"
+        ],
+        "valueType": [
+          10
+        ]
       },
       {
         "selectType": 0,
-        "value": ["l_discount"],
-        "valueType": [10]
+        "value": [
+          "l_discount"
+        ],
+        "valueType": [
+          10
+        ]
       }
     ],
     "columnFiltering": [
-        "l_returnflag", 
-        "l_linestatus",
-        "l_quantity",
-        "l_extendedprice",
-        "l_tax"
-      ],
+      "l_returnflag",
+      "l_linestatus",
+      "l_quantity",
+      "l_extendedprice",
+      "l_tax"
+    ],
     "groupBy": []
   }
-
 }
