@@ -44,7 +44,7 @@ void Scan::Scanning() {
 
     FilterInfo filterInfo(snippet.table_col, snippet.column_projection,
                           snippet.projection_datatype, snippet.groupby_col,
-                          snippet.table_filter);
+                          snippet.table_filter, snippet.columnAlias);
     Result scanResult(snippet.query_id, snippet.work_id, snippet.csd_name,
                       snippet.table_name, file_name, filterInfo);
 

@@ -45,7 +45,7 @@ class Filter {
   struct RowFilterData {
     vector<string> forFilterColumn;
     vector<opertype> forFilterOperators;
-    vector<string> forFilterValue;
+    vector<vector<string>> forFilterValue;
     vector<string> forFilterColumn2;
     vector<int> startoff;
     vector<int> offlen;

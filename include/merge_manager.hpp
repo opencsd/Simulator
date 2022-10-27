@@ -42,26 +42,29 @@ class MergeManager {
 };
 
 struct FilterInfo {
-  string table_filter;
+  vector<TableFilter> table_filter;
   vector<string> table_col;  //스캔테이블
   vector<int> filteredIndex;
   vector<char> postFix;
   vector<char> logicalOperators;
-  vector<char> filterResults;
+  vector<bool> filterResults;
   vector<Projection> column_projection;  // select절 정보
   vector<int> projection_datatype;  //*컬럼 프로젝션 후 컬럼의 데이터타입
+  unordered_map<string, vector<typeVar>> mergedData;
+  vector<string> columnAlias;
   vector<string> groupby_col;  // goup by절 정보
   bool need_col_filtering;
 
   FilterInfo() {}
   FilterInfo(vector<string> table_col_, vector<Projection> column_projection_,
              vector<int> projection_datatype_, vector<string> groupby_col_,
-             string table_filter_)
+             vector<TableFilter> table_filter_, vector<string> columnAlias_)
       : table_col(table_col_),
         column_projection(column_projection_),
         projection_datatype(projection_datatype_),
         groupby_col(groupby_col_),
-        table_filter(table_filter_) {}
+        table_filter(table_filter_),
+        columnAlias(columnAlias_) {}
 };
 /*
 MySQL_BYTE = 1,
@@ -124,16 +127,19 @@ struct typeVar {
     switch (type_) {
       case 1: {  // MySQL_BYTE
         intVar = (uint8_t)data[0];
+        type = 0;
         break;
       }
       case 2: {  // MySQL_INT16
         intVar = static_cast<int>(((uint8_t)data[0]) | ((uint8_t)data[1] << 8));
+        type = 0;
         break;
       }
       case 3: {  // MySQL_INT32
         intVar = static_cast<int>(((uint8_t)data[0]) | ((uint8_t)data[1] << 8) |
                                   ((uint8_t)data[2] << 16) |
                                   ((uint8_t)data[3] << 24));
+        type = 0;
         break;
       }
       case 8: {  // MySQL_INT64
@@ -142,6 +148,7 @@ struct typeVar {
             ((uint8_t)data[2] << 16) | ((uint8_t)data[3] << 24) |
             ((uint8_t)data[4] << 32) | ((uint8_t)data[5] << 40) |
             ((uint8_t)data[6] << 48) | ((uint8_t)data[7] << 56));
+        type = 1;
         break;
       }
       case 4:  // MySQL_FLOAT32
@@ -158,7 +165,7 @@ struct typeVar {
         int tmpFloatData = static_cast<int>(((uint8_t)data[5]));
         typeDecimal tmpdcm(tmpIntegerData, tmpFloatData);
         doubleVar = tmpdcm;
-
+        type = 4;
         break;
       }
       case 14: {  // MySQL_DATE
@@ -166,7 +173,7 @@ struct typeVar {
         dateVar.month = static_cast<int>(((uint8_t)data[0])) / 32;
         dateVar.year =
             static_cast<int>(((uint8_t)data[1]) | ((uint8_t)data[2] << 8)) / 2;
-
+        type = 3;
         /* code */
         break;
       }
@@ -174,6 +181,7 @@ struct typeVar {
         /* code */
         break;
       case 254: {
+        type = 2;
         // char charVal[len + 1];
         // memcpy(charVal, data, len);
         // charVal[len] = '\0';
@@ -184,7 +192,7 @@ struct typeVar {
         break;  // MySQL_STRING
       }
       case 15: {  // MySQL_VARSTRING
-
+        type = 2;
         if (len > 255) {
           len = static_cast<int>(((uint8_t)data[0]) | ((uint8_t)data[1] << 8));
           // char charVal[len + 1];
@@ -212,6 +220,20 @@ struct typeVar {
   string getStrVal() { return strVar; }
   string getDateVal() { return dateVar.strconv(); }
   string getDoubleVal() { return doubleVar.printDecimal(); }
+  string getVal() {
+    switch (type) {
+      case 0:
+        return getIntVal();
+      case 1:
+        return getInt64Val();
+      case 2:
+        return strVar;
+      case 3:
+        return getDateVal();
+      case 4:
+        return getDoubleVal();
+    }
+  }
 };
 
 struct Result {

@@ -108,6 +108,17 @@ struct PrimaryKey {
   int key_length;
 };
 
+struct FilterValue {
+  vector<bool> isColumn;
+  vector<string> value;
+};
+
+struct TableFilter {
+  FilterValue LeftValue;
+  int FilterOperator;
+  FilterValue RightValue;
+};
+
 struct Snippet {
   int work_id;         //*워크ID
   int query_id;        //*쿼리ID
@@ -130,7 +141,9 @@ struct Snippet {
   // vector<string> filtered_col;//*컬럼 필터링후 남는 컬럼명
   // vector<int> filtered_datatype;//컬럼 필터링후 남는 컬럼타입(계산)
   // unordered_map<string, int> filtered_colindexmap;//컬럼 필터링후 컬럼의 순서
-  string table_filter;                   //*where절 정보
+
+  vector<TableFilter> table_filter;  //*where절 정보
+  vector<string> columnAlias;
   vector<Projection> column_projection;  //*select문 정보
   vector<int> projection_datatype;  //*컬럼 프로젝션 후 컬럼의 데이터타입
   vector<string> groupby_col;  //*group by 정보
@@ -243,6 +256,10 @@ struct Snippet {
         primary_length += key_length_;
       }
     }
+    Value &columnAlias_ = document["columnAlias"];
+    for (int i = 0; i < columnAlias_.Size(); i++) {
+      columnAlias.emplace_back(columnAlias_[i].GetString());
+    }
 
     //컬럼 프로젝션 정보 저장
     column_projection.clear();
@@ -285,17 +302,30 @@ struct Snippet {
 
     // filter 작업인 경우 확인
     Value &table_filter_ = document["tableFilter"];
-    if (table_filter_.Size() != 0) {
-      Document small_document;
-      small_document.SetObject();
-      rapidjson::Document::AllocatorType &allocator =
-          small_document.GetAllocator();
-      small_document.AddMember("tableFilter", table_filter_, allocator);
-      StringBuffer strbuf;
-      rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(strbuf);
-      small_document.Accept(writer);
-      table_filter = strbuf.GetString();
-      only_scan = false;
+    for (int i = 0; i < table_filter_.Size(); i++) {
+      FilterValue lv;
+      FilterValue rv;
+      TableFilter tmpfilter;
+      for (int j = 0; j < table_filter_[i]["LV"]["type"].Size(); i++) {
+        if (table_filter_[i]["LV"]["type"][j] == COLUMN) {
+          lv.isColumn.emplace_back(true);
+        } else {
+          lv.isColumn.emplace_back(false);
+        }
+        lv.value.emplace_back(table_filter_[i]["LV"]["value"][j]);
+      }
+      for (int j = 0; j < table_filter_[i]["RV"]["type"].Size(); i++) {
+        if (table_filter_[i]["RV"]["type"][j] == COLUMN) {
+          rv.isColumn.emplace_back(true);
+        } else {
+          rv.isColumn.emplace_back(false);
+        }
+        rv.value.emplace_back(table_filter_[i]["RV"]["value"][j]);
+      }
+      tmpfilter.FilterOperator = table_filter_[i]["Operator"].GetInt();
+      tmpfilter.LeftValue = lv;
+      tmpfilter.RightValue = rv;
+      table_filter.emplace_back(tmpfilter);
     }
 
     // deleted key 확인

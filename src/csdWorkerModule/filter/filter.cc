@@ -42,1452 +42,297 @@ int Filter::BlockFilter(Result &scanResult) {
                       scanResult.sst_name, scanResult.filter_info);
 
   filterresult.row_count = scanResult.row_count;
-
-  string str = scanResult.filter_info.table_filter;
-  Document document;
-  document.Parse(str.c_str());
-
-  auto filterarray = document["tableFilter"].GetArray();
-  int totalFilterSize = 0;
-  int operatorFilterSize = 0;
-  int variableFilterSize = 0;
-  for (auto it = filterarray.Begin(); it != filterarray.End(); it++) {
-    Value &filterInfo = *it;
-    int tmpTableName = filterInfo["Operator"].GetInt();
-    if (tmpTableName == AND || tmpTableName == OR) {
-      operatorFilterSize++;
-    } else {
-      variableFilterSize++;
-    }
+  for (int i = 0; i < filterresult.filter_info.columnAlias.size(); i++) {
+    filterresult.filter_info.mergedData[filterresult.filter_info.columnAlias[i]]
+        .reserve(scanResult.row_count);
   }
-  totalFilterSize = operatorFilterSize + variableFilterSize;
-  filterresult.filter_info.postFix.reserve(totalFilterSize);
-  filterresult.filter_info.logicalOperators.reserve(operatorFilterSize);
-  filterresult.filter_info.filterResults.reserve(variableFilterSize);
-  for (auto it = filterarray.Begin(); it != filterarray.End(); it++) {
-    Value &filterInfo = *it;
-    int tmpTableName = filterInfo["Operator"].GetInt();
-    if (tmpTableName == AND) {
-      filterresult.filter_info.logicalOperators.emplace_back('&');
-    } else if (tmpTableName == OR) {
-      filterresult.filter_info.logicalOperators.emplace_back('|');
-    } else {
-      variableFilterSize++;
-    }
-  }
-  bool substringflag;
-  string tmpsubstring;
-  // makedefaultmap(ColName, startoff, offlen, datatype, ColNum, startptr,
-  // lengthRaw, typedata);
-  for (int i = 0; i < ColNum; i++) {
-    typedata.insert(
-        make_pair(rowfilterdata.ColName[i], rowfilterdata.datatype[i]));
-  }
-  int iter = 0;  //각 row의 시작점
-  saverowcount += RowNum;
-  // cout << "saverowcount: " << saverowcount << endl;
-  for (int i = 0; i < RowNum; i++) {
-    cout << "[CSD Filter] Filtering Data... (RowCNT : " << i << ")" << endl;
-    // saverowcount++;
-    // cout << saverowcount << endl;
-    // cout << "testprint" << endl;
-    // for(auto k = newstartptr.begin(); k != newstartptr.end(); k++){
-    //     pair<string,int> a = *k;
-    //     cout << a.first << " " << a.second << endl;
-    // }
-    rowfilterdata.offsetcount = 0;
-    newstartptr.clear();
-    newlengthraw.clear();
-    // cout << "testprint11" << endl;
-    // for(auto k = newstartptr.begin(); k != newstartptr.end(); k++){
-    //     pair<string,int> a = *k;
-    //     cout << a.first << " " << a.second << endl;
-    // }
-    // clock_t start1 = clock();
-    // makenewmap(isvarchar, ColNum, newstartptr, newlengthraw, datatype,
-    // lengthRaw, ColName,iter, startoff, offlen, rowbuf); clock_t finish1 =
-    // clock(); cout << (double)(finish1 - start1) / CLOCKS_PER_SEC << endl;
-    iter = scanResult.row_offset[i];
-    rowfilterdata.rowoffset = iter;
-    TmpV = true;
-    Passed = false;
-    isSaved = false;
-    canSaved = false;
-    isnot = false;
-    bool isfirst1 = true;
-    for (int j = 0; j < filterarray.Size(); j++) {
-      if (Passed) {
-        // cout << "passcomp" << endl;
-        switch (filterarray[j]["OPERATOR"].GetInt()) {
-          case OR:
-            isnot = false;
-            if (CV == true) {
-              isSaved = true;
-              // cout << "Saved or" << endl;
-              // SavedRow(Rawrowdata[i]);
-            } else {
-              TmpV = true;
-              // PrevOper = 0;
-              Passed = false;
-            }
-            /* code */
-            break;
-          default:
-            break;
-        }
-      } else {
-        switch (filterarray[j]["OPERATOR"].GetInt()) {
-          case GE:
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     // string rowfilter = "*Pass Compare*";
-            //     // strcpy(msg.msg, rowfilter.c_str());
-            //     // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-            //     // {
-            //     //     printf("msgget failed\n");
-            //     //     exit(0);
-            //     // }
-            //     // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-            //     // {
-            //     //     printf("msgsnd failed\n");
-            //     //     exit(0);
-            //     // }
-            //     break;
-            // }
-            // else
-            // {
-            if (filterarray[j]["LV"].IsString()) {
-              // 6은 스트링 --> 스트링이다는 컬럼이름이거나 char이거나
-              // decimal이다
-              if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-              {
-                // cout << typedata[filterarray[j]["LV"].GetString()] << endl;
-                int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                    rowbuf);
-                int RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  // cout << "!" << endl;
-                  RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                                  rowbuf);
-                  // cout << "@" << endl;
-                } else {
-                  RV = filterarray[j]["RV"].GetInt();
-                }
-                // string rowfilter = "LV : " + to_string(LV) + " >= RV : " +
-                // to_string(RV); cout << rowfilter << endl; strcpy(msg.msg,
-                // rowfilter.c_str()); if ((msqid = msgget(key, IPC_CREAT |
-                // 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
-                compareGE(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << CV << endl;
-              } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                         typedata[filterarray[j]["LV"].GetString()] ==
-                             15)  //빅에디안
-              {
-                string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                      typedata[filterarray[j]["RV"].GetString()] == 15) {
-                    RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                  } else {
-                    RV = filterarray[j]["RV"].GetString();
-                    RV = RV.substr(1);
-                  }
-                } else {  // string과 int의 비교 시
-                }
 
-                compareGE(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type big" << endl;
-              } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                         246)  //예외 Decimal일때
-              {
-                string LV =
-                    typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                    RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                  } else {
-                    RV = filterarray[j]["RV"].GetString();
-                    RV = RV.substr(1);
-                  }
-                } else {  //여기가 int를 데시멀로 바꾸는 부분
-                  int tmpint;
-                  tmpint = filterarray[j]["RV"].GetInt();
-                  RV = ItoDec(tmpint);
-                }
-                compareGE(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type decimal" << endl;
+  for (int i = 0; i < filterresult.row_count; i++) {
+    for (int j = 0; j < filterresult.filter_info.table_filter.size(); j++) {
+      switch (filterresult.filter_info.table_filter[j].FilterOperator) {
+        case GE: {
+          if (filterresult.filter_info.table_filter[j].LeftValue.isColumn[0]) {
+            if (filterresult.filter_info.table_filter[j]
+                    .RightValue.isColumn[0]) {
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) >=
+                  atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .RightValue.value[0]][i]
+                           .getVal()
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
               } else {
-                string LV = filterarray[j]["LV"].GetString();
-                LV = LV.substr(1);
-                string RV;
-                if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                    typedata[filterarray[j]["RV"].GetString()] == 15) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                  RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                }
-                compareGE(LV, RV, CV, TmpV, canSaved, isnot);
-                // string lebetween = "LV : " + LV + " >=" + " RV : " + RV;
-                // cout << lebetween << endl;
-                // // char tempstr = lebetween.c_str();
-                // strcpy(msg.msg, lebetween.c_str());
-                // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
+                filterresult.filter_info.filterResults.emplace_back(false);
               }
-            } else {  // lv는 인트타입의 상수
-              int LV = filterarray[j]["LV"].GetInt();
-              int RV;
-              RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                              rowbuf);
-              compareGE(LV, RV, CV, TmpV, canSaved, isnot);
-              // cout << LV << " " << RV << endl;
-              // string lebetween = "LV : " + to_string(LV) + " >=" + " RV : " +
-              // to_string(RV); cout << lebetween << endl; strcpy(msg.msg,
-              // lebetween.c_str()); if ((msqid = msgget(key, IPC_CREAT | 0666))
-              // == -1)
-              // {
-              //     printf("msgget failed\n");
-              //     exit(0);
-              // }
-              // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-              // {
-              //     printf("msgsnd failed\n");
-              //     exit(0);
-              // }
-            }
-            // }
-            /* code */
-            break;
-          case LE:
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     // string rowfilter = "*Pass Compare*";
-            //     // strcpy(msg.msg, rowfilter.c_str());
-            //     // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-            //     // {
-            //     //     printf("msgget failed\n");
-            //     //     exit(0);
-            //     // }
-            //     // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-            //     // {
-            //     //     printf("msgsnd failed\n");
-            //     //     exit(0);
-            //     // }
-            //     break;
-            // }
-            // else
-            // {
-            if (filterarray[j]["LV"]
-                    .IsString()) {  // 6은 스트링 --> 스트링이다는
-                                    // 컬럼이름이거나 char이거나 decimal이다
-              if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-              {
-                int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                    rowbuf);
-                int RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                                  rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetInt();
-                }
-                compareLE(LV, RV, CV, TmpV, canSaved, isnot);
-              } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                         typedata[filterarray[j]["LV"].GetString()] ==
-                             15)  //빅에디안
-              {
-                string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetString();
-                  RV = RV.substr(1);
-                }
-                compareLE(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type big" << endl;
-              } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                         246)  //예외 Decimal일때
-              {
-                string LV =
-                    typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                    RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                  } else {
-                    RV = filterarray[j]["RV"].GetString();
-                    RV = RV.substr(1);
-                  }
-                } else {  //여기가 int를 데시멀로 바꾸는 부분
-                  int tmpint;
-                  tmpint = filterarray[j]["RV"].GetInt();
-                  RV = ItoDec(tmpint);
-                }
-                compareLE(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type decimal" << endl;
-              } else {
-                string LV = filterarray[j]["LV"].GetString();
-                LV = LV.substr(1);
-                string RV;
-                if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                    typedata[filterarray[j]["RV"].GetString()] == 15) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                  RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                }
-                compareLE(LV, RV, CV, TmpV, canSaved, isnot);
-              }
-            } else {  // lv는 인트타입의 상수
-              int LV = filterarray[j]["LV"].GetInt();
-              int RV;
-              RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                              rowbuf);
-              compareLE(LV, RV, CV, TmpV, canSaved, isnot);
-              // string lebetween = "LV : " + to_string(LV) + " <=" + " RV : " +
-              // to_string(RV); cout << lebetween << endl; strcpy(msg.msg,
-              // lebetween.c_str()); if ((msqid = msgget(key, IPC_CREAT | 0666))
-              // == -1)
-              // {
-              //     printf("msgget failed\n");
-              //     exit(0);
-              // }
-              // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-              // {
-              //     printf("msgsnd failed\n");
-              //     exit(0);
-              // }
-            }
-            // }
-            /* code */
-            break;
-          case GT:
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     // string rowfilter = "*Pass Compare*";
-            //     // strcpy(msg.msg, rowfilter.c_str());
-            //     // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-            //     // {
-            //     //     printf("msgget failed\n");
-            //     //     exit(0);
-            //     // }
-            //     // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-            //     // {
-            //     //     printf("msgsnd failed\n");
-            //     //     exit(0);
-            //     // }
-            //     break;
-            // }
-            // else
-            // {
-            if (filterarray[j]["LV"]
-                    .IsString()) {  // 6은 스트링 --> 스트링이다는
-                                    // 컬럼이름이거나 char이거나 decimal이다
-              if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-              {
-                int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                    rowbuf);
-                int RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                                  rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetInt();
-                }
-                compareGT(LV, RV, CV, TmpV, canSaved, isnot);
-              } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                         typedata[filterarray[j]["LV"].GetString()] ==
-                             15)  //빅에디안
-              {
-                string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetString();
-                  RV = RV.substr(1);
-                }
-                compareGT(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type big" << endl;
-              } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                         246)  //예외 Decimal일때
-              {
-                string LV =
-                    typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                    RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                  } else {
-                    RV = filterarray[j]["RV"].GetString();
-                    RV = RV.substr(1);
-                  }
-                } else {  //여기가 int를 데시멀로 바꾸는 부분
-                  int tmpint;
-                  tmpint = filterarray[j]["RV"].GetInt();
-                  RV = ItoDec(tmpint);
-                }
-                // string rowfilter = "LV : " + LV + " >" + " RV : " + RV;
-                // cout << rowfilter << endl;
-                // strcpy(msg.msg, rowfilter.c_str());
-                // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
-                compareGT(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type decimal" << endl;
-              } else {
-                string LV = filterarray[j]["LV"].GetString();
-                LV = LV.substr(1);
-                string RV;
-                if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                    typedata[filterarray[j]["RV"].GetString()] == 15) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                  RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                }
-                compareGT(LV, RV, CV, TmpV, canSaved, isnot);  //여기
-                // string lebetween = "LV : " + LV + " >" + " RV : " + RV;
-                // cout << lebetween << endl;
-                // strcpy(msg.msg, lebetween.c_str());
-                // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
-              }
-            } else {  // lv는 인트타입의 상수
-              int LV = filterarray[j]["LV"].GetInt();
-              int RV;
-              RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                              rowbuf);
-              compareGT(LV, RV, CV, TmpV, canSaved, isnot);
-              // string rowfilter = "LV : " + to_string(LV) + " >" + " RV : " +
-              // to_string(RV); cout << rowfilter << endl; strcpy(msg.msg,
-              // rowfilter.c_str()); if ((msqid = msgget(key, IPC_CREAT | 0666))
-              // == -1)
-              // {
-              //     printf("msgget failed\n");
-              //     exit(0);
-              // }
-              // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-              // {
-              //     printf("msgsnd failed\n");
-              //     exit(0);
-              // }
-            }
-            // }
-            /* code */
-            break;
-          case LT:
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     // string rowfilter = "*Pass Compare*";
-            //     // strcpy(msg.msg, rowfilter.c_str());
-            //     // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-            //     // {
-            //     //     printf("msgget failed\n");
-            //     //     exit(0);
-            //     // }
-            //     // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-            //     // {
-            //     //     printf("msgsnd failed\n");
-            //     //     exit(0);
-            //     // }
-            //     break;
-            // }
-            // else
-            // {
-            // cout << "^^^^^^^^^^^^^" << endl;
-            if (filterarray[j]["LV"].IsString()) {
-              // cout<<"!!!@@@###$$ " << filterarray[j]["LV"].GetString() <<
-              // endl; // 6은 스트링 --> 스트링이다는 컬럼이름이거나 char이거나
-              // decimal이다
-              if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-              {
-                // cout << typedata[filterarray[j]["LV"].GetString()] << endl;
-                int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                    rowbuf);
-                int RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  // cout << typedata[filterarray[j]["RV"].GetString()] << endl;
-                  RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                                  rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetInt();
-                }
-                // cout << LV << " " << RV << endl;
-                // string rowfilter = "LV : " + to_string(LV) + " < RV : " +
-                // to_string(RV); cout << rowfilter << endl; strcpy(msg.msg,
-                // rowfilter.c_str()); if ((msqid = msgget(key, IPC_CREAT |
-                // 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
-                compareLT(LV, RV, CV, TmpV, canSaved, isnot);
-              } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                         typedata[filterarray[j]["LV"].GetString()] ==
-                             15)  //빅에디안
-              {
-                string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetString();
-                  RV = RV.substr(1);
-                }
-                compareLT(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type big" << endl;
-              } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                         246)  //예외 Decimal일때
-              {
-                string LV =
-                    typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                    RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                  } else {
-                    RV = filterarray[j]["RV"].GetString();
-                    RV = RV.substr(1);
-                  }
-                } else {  //여기가 int를 데시멀로 바꾸는 부분
-                  int tmpint;
-                  tmpint = filterarray[j]["RV"].GetInt();
-                  RV = ItoDec(tmpint);
-                }
-                // string rowfilter = "LV : " + LV + " < RV : " + RV;
-                // cout << rowfilter << endl;
-                // strcpy(msg.msg, rowfilter.c_str());
-                // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
-                compareLT(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type decimal" << endl;
-              } else {
-                string LV = filterarray[j]["LV"].GetString();
-                LV = LV.substr(1);
-                string RV;
-                if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                    typedata[filterarray[j]["RV"].GetString()] == 15) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                  RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                }
-                // string rowfilter = "LV : " + LV + " <" + " RV : " + RV;
-                // strcpy(msg.msg, rowfilter.c_str());
-                // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
-                compareLT(LV, RV, CV, TmpV, canSaved, isnot);
-              }
-            } else {  // lv는 인트타입의 상수
-              int LV = filterarray[j]["LV"].GetInt();
-              int RV;
-              RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                              rowbuf);
-              compareLT(LV, RV, CV, TmpV, canSaved, isnot);
-              // string lebetween = "LV : " + to_string(LV) + "<" + " RV : " +
-              // to_string(RV); cout << lebetween << endl; strcpy(msg.msg,
-              // lebetween.c_str()); if ((msqid = msgget(key, IPC_CREAT | 0666))
-              // == -1)
-              // {
-              //     printf("msgget failed\n");
-              //     exit(0);
-              // }
-              // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-              // {
-              //     printf("msgsnd failed\n");
-              //     exit(0);
-              // }
-            }
-            // }
-            /* code */
-            break;
-          case ET:
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     string rowfilter = "*Pass Compare*";
-            //     break;
-            // }
-            // else
-            // {
-            if (filterarray[j]["LV"]
-                    .IsString()) {  // 6은 스트링 --> 스트링이다는
-                                    // 컬럼이름이거나 char이거나 decimal이다
-              if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-              {
-                int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                    rowbuf);
-                // cout << filterarray[j]["LV"].GetString() << endl;
-                // cout << LV << endl;
-                int RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                                  rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetInt();
-                }
-                compareET(LV, RV, CV, TmpV, canSaved, isnot);
-              } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                         typedata[filterarray[j]["LV"].GetString()] ==
-                             15)  //빅에디안
-              {
-                string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                    typedata[filterarray[j]["RV"].GetString()] == 15) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetString();
-                  RV = RV.substr(1);
-                }
-                compareET(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type big" << endl;
-              } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                         246)  //예외 Decimal일때
-              {
-                string LV =
-                    typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                    RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                  } else {
-                    RV = filterarray[j]["RV"].GetString();
-                    RV = RV.substr(1);
-                  }
-                } else {  //여기가 int를 데시멀로 바꾸는 부분
-                  int tmpint;
-                  tmpint = filterarray[j]["RV"].GetInt();
-                  RV = ItoDec(tmpint);
-                }
-                compareET(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type decimal" << endl;
-              } else {
-                string LV = filterarray[j]["LV"].GetString();
-                LV = LV.substr(1);
-                string RV;
-                if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                    typedata[filterarray[j]["RV"].GetString()] == 15) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                  RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                }
-                compareET(LV, RV, CV, TmpV, canSaved, isnot);
-              }
-            } else {  // lv는 인트타입의 상수
-              int LV = filterarray[j]["LV"].GetInt();
-              int RV;
-              RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                              rowbuf);
-              compareET(LV, RV, CV, TmpV, canSaved, isnot);
-            }
-            // }
-            /* code */
-            break;
-          case NE:
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     break;
-            // }
-            // else
-            // {
-            if (filterarray[j]["LV"]
-                    .IsString()) {  // 6은 스트링 --> 스트링이다는
-                                    // 컬럼이름이거나 char이거나 decimal이다
-              if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-              {
-                int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                    rowbuf);
-                int RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                                  rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetInt();
-                }
-                compareNE(LV, RV, CV, TmpV, canSaved, isnot);
-              } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                         typedata[filterarray[j]["LV"].GetString()] ==
-                             15)  //빅에디안
-              {
-                string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else {
-                  RV = filterarray[j]["RV"].GetString();
-                  RV = RV.substr(1);
-                }
-                compareNE(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type big" << endl;
-              } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                         246)  //예외 Decimal일때
-              {
-                string LV =
-                    typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                if (filterarray[j]["RV"].IsString()) {
-                  if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                    RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                  } else {
-                    RV = filterarray[j]["RV"].GetString();
-                    RV = RV.substr(1);
-                  }
-                } else {  //여기가 int를 데시멀로 바꾸는 부분
-                  int tmpint;
-                  tmpint = filterarray[j]["RV"].GetInt();
-                  RV = ItoDec(tmpint);
-                }
-                compareNE(LV, RV, CV, TmpV, canSaved, isnot);
-                // cout << "type decimal" << endl;
-              } else {
-                string LV = filterarray[j]["LV"].GetString();
-                LV = LV.substr(1);
-                string RV;
-                if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                    typedata[filterarray[j]["RV"].GetString()] == 15) {
-                  RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-                } else if (typedata[filterarray[j]["RV"].GetString()] == 246) {
-                  RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-                }
-                compareNE(LV, RV, CV, TmpV, canSaved, isnot);
-              }
-            } else {  // lv는 인트타입의 상수
-              int LV = filterarray[j]["LV"].GetInt();
-              int RV;
-              RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                              rowbuf);
-              compareNE(LV, RV, CV, TmpV, canSaved, isnot);
-            }
-            // }
-            /* code */
-            break;
-          case LIKE: {
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     //  cout << "isnot print :" << isnot << " value : " << LV <<
-            //     endl;
-            // }
-            // else
-            // {
-            string RV;
-            string LV;
-            if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-            {
-              int tmplv;
-              tmplv = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                 rowbuf);
-              LV = to_string(tmplv);
-              // cout << "type little" << endl;
-              //나중 다른 데이트 처리를 위한 구분
-            }
-
-            else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                     typedata[filterarray[j]["LV"].GetString()] ==
-                         15)  //빅에디안
-            {
-              LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-              // cout << "type big" << endl;
-            } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                       246)  //예외 Decimal일때
-            {
-              LV = typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-              // cout << "type decimal" << endl;
             } else {
-              LV = filterarray[j]["LV"].GetString();
-              LV = LV.substr(1);
-            }
-            if (typedata[filterarray[j]["RV"].GetString()] == 3 ||
-                typedata[filterarray[j]["RV"].GetString()] == 14)  //리틀에디안
-            {
-              int tmprv;
-              tmprv = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-                                 rowbuf);
-              RV = to_string(tmprv);
-              // cout << "type little" << endl;
-              //나중 다른 데이트 처리를 위한 구분
-            }
-
-            else if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                     typedata[filterarray[j]["RV"].GetString()] ==
-                         15)  //빅에디안
-            {
-              RV = typeBig(filterarray[j]["RV"].GetString(), rowbuf);
-              // cout << "type big" << endl;
-            } else if (typedata[filterarray[j]["RV"].GetString()] ==
-                       246)  //예외 Decimal일때
-            {
-              RV = typeDecimal(filterarray[j]["RV"].GetString(), rowbuf);
-              // cout << "type decimal" << endl;
-            } else {
-              RV = filterarray[j]["RV"].GetString();
-              RV = RV.substr(1);
-            }
-            CV = LikeSubString_v2(LV, RV);
-            // cout << CV << endl;
-            // }
-            // cout << "isnot print :" << isnot << " value : " << LV << endl;
-            // cout << isnot << endl;
-            if (isnot) {
-              if (CV) {
-                CV = false;
-                canSaved = false;
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) >=
+                  atof(filterresult.filter_info.table_filter[j]
+                           .RightValue.value[0]
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
               } else {
-                CV = true;
-                canSaved = true;
+                filterresult.filter_info.filterResults.emplace_back(false);
               }
             }
-            /* code */
-            break;
           }
-          case BETWEEN:
-            // if (Passed)
-            // {
-            //     // cout << "*Row Filtered*" << endl;
-            //     // string rowfilter = "*Pass Compare*";
-            //     // strcpy(msg.msg, rowfilter.c_str());
-            //     // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-            //     // {
-            //     //     printf("msgget failed\n");
-            //     //     exit(0);
-            //     // }
-            //     // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-            //     // {
-            //     //     printf("msgsnd failed\n");
-            //     //     exit(0);
-            //     // }
-            // }
-            // else
-            // {
-            // cout << typedata[filterarray[j]["LV"].GetString()] << endl;
-            // cout << filterarray[j]["EXTRA"][0].GetString() << endl;
-            //  cout << filterarray[j]["LV"].GetString() << endl;
-            // cout << j << endl;
-            //  cout << filterarray[j]["LV"].GetType() << endl;
-            if (filterarray[j]["LV"].IsString()) {
-              // cout << "type : 5" << endl;
-              // string filtersring = filterarray[j]["LV"].GetString();
-              // cout << typedata[filtersring] << endl;
-              // cout << typedata[filterarray[j]["LV"].GetString()] << endl; //
-              // 6은 스트링 --> 스트링이다는 컬럼이름이거나 char이거나
-              // decimal이다
-              if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                  typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-              {
-                int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                    rowbuf);
-                int RV;
-                int RV1;
-                for (int k = 0; k < filterarray[j]["EXTRA"].Size(); k++) {
-                  if (filterarray[j]["EXTRA"][k]
-                          .IsString()) {  //컬럼명 또는 스트링이다. --> 스트링을
-                                          // int로 변경, 만약 변경 불가한 문자의
-                                          //경우 ex. 'asd' 예외처리해서 걍 f로
-                                          //반환
-                    if (typedata[filterarray[j]["EXTRA"][k].GetString()] == 3 ||
-                        typedata[filterarray[j]["EXTRA"][k].GetString()] ==
-                            14) {
-                      if (k == 0) {
-                        RV = typeLittle(typedata,
-                                        filterarray[j]["EXTRA"][k].GetString(),
-                                        rowbuf);
-                      } else {
-                        RV1 = typeLittle(typedata,
-                                         filterarray[j]["EXTRA"][k].GetString(),
-                                         rowbuf);
-                      }
-                    } else {  //스트링이다 --> 변환 가능한가
-                      if (k == 0) {
-                        try {
-                          RV = stoi(filterarray[j]["EXTRA"][k].GetString());
-                        } catch (...) {
-                          CV = true;  //수정 필요
-                          break;
-                        }
-                      } else {
-                        try {
-                          RV1 = stoi(filterarray[j]["EXTRA"][k].GetString());
-                        } catch (...) {
-                          CV = true;
-                          break;
-                        }
-                      }
-                    }
-                  } else if (filterarray[j]["EXTRA"][k].IsInt() ||
-                             filterarray[j]["EXTRA"][k].IsDouble() ||
-                             filterarray[j]["EXTRA"][k]
-                                 .IsFloat())  // int,float 타입
-                  {                           // int, float, double
-                    if (filterarray[j]["EXTRA"][k].IsInt()) {
-                      if (k == 0) {
-                        RV = filterarray[j]["EXTRA"][k].GetInt();
-                      } else {
-                        RV1 = filterarray[j]["EXTRA"][k].GetInt();
-                      }
-                    } else {  // float일 경우는 없음 --> 스트링으로 들어오기
-                              // 때문에
-                      float RV = filterarray[j]["EXTRA"][k].GetFloat();
-                    }
-                  }
-                }
-                CV = BetweenOperator(LV, RV, RV1);
-              } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                         typedata[filterarray[j]["LV"].GetString()] ==
-                             15)  //빅에디안
-              {
-                string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                string RV1;
-                for (int k = 0; k < filterarray[j]["EXTRA"].Size(); k++) {
-                  if (filterarray[j]["EXTRA"][k]
-                          .IsString()) {  //컬럼명 또는 스트링이다. -->
-                                          //스트링이다 == float가 decimal로
-                                          // 800000000으로 들어온다
-                    if (typedata[filterarray[j]["EXTRA"][k].GetString()] == 3 ||
-                        typedata[filterarray[j]["EXTRA"][k].GetString()] ==
-                            14) {
-                      if (k == 0) {
-                        RV = typeBig(filterarray[j]["EXTRA"][k].GetString(),
-                                     rowbuf);
-                      } else {
-                        RV1 = typeBig(filterarray[j]["EXTRA"][k].GetString(),
-                                      rowbuf);
-                      }
-                    } else {  //스트링이다 --> 변환 가능한가
-                      if (k == 0) {
-                        try {
-                          RV = filterarray[j]["EXTRA"][k].GetString();
-                          RV = RV.substr(1);
-                        } catch (...) {
-                          CV = true;  //수정 필요
-                          break;
-                        }
-                      } else {
-                        try {
-                          RV1 = filterarray[j]["EXTRA"][k].GetString();
-                          RV1 = RV.substr(1);
-                        } catch (...) {
-                          CV = true;
-                          break;
-                        }
-                      }
-                    }
-                  } else if (filterarray[j]["EXTRA"][k].IsInt() ||
-                             filterarray[j]["EXTRA"][k].IsDouble() ||
-                             filterarray[j]["EXTRA"][k]
-                                 .IsFloat())  // int,float 타입 이 부분도
-                                              // 수정필요 string과 int의 비교
-                  {  // int, float, double
-                    int tmpint;
-                    if (filterarray[j]["EXTRA"][k].IsInt()) {
-                      if (k == 0) {
-                        tmpint = filterarray[j]["EXTRA"][k].GetInt();
-                        RV = to_string(tmpint);
-                      } else {
-                        tmpint = filterarray[j]["EXTRA"][k].GetInt();
-                        RV1 = to_string(tmpint);
-                      }
-                    } else {  // float일 경우는 없음 --> 스트링으로 들어오기
-                              // 때문에 float RV =
-                              // filterarray[j]["EXTRA"][k].GetFloat();
-                    }
-                  }
-                }
-                CV = BetweenOperator(LV, RV, RV1);
-              } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                         246)  //예외 Decimal일때
-              {
-                // cout << "type : 246" << endl;
-                // cout << typedata[filterarray[j]["LV"].GetString()] << endl;
-                // cout << "j : " << j << endl;
-                // cout << "246" << j << endl;
-                // cout << filtersring << endl;
-                string LV =
-                    typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                string RV;
-                string RV1;
-                // cout << LV << endl;
-                for (int k = 0; k < filterarray[j]["EXTRA"].Size(); k++) {
-                  // cout << filterarray[j]["EXTRA"][k].GetType() << endl;
-                  if (filterarray[j]["EXTRA"][k]
-                          .IsString()) {  //컬럼명 또는 스트링이다. -->
-                                          //스트링이다 == float가 decimal로
-                                          // 800000000으로 들어온다
-                    if (typedata[filterarray[j]["EXTRA"][k].GetString()] == 3 ||
-                        typedata[filterarray[j]["EXTRA"][k].GetString()] ==
-                            14) {
-                      if (k == 0) {
-                        RV = typeDecimal(filterarray[j]["EXTRA"][k].GetString(),
-                                         rowbuf);
-                      } else {
-                        RV1 = typeDecimal(
-                            filterarray[j]["EXTRA"][k].GetString(), rowbuf);
-                      }
-                    } else {  //스트링이다 --> 변환 가능한가
-                      if (k == 0) {
-                        try {
-                          RV = filterarray[j]["EXTRA"][k].GetString();
-                          RV = RV.substr(1);
-                        } catch (...) {
-                          CV = true;  //수정 필요
-                          break;
-                        }
-                      } else {
-                        try {
-                          RV1 = filterarray[j]["EXTRA"][k].GetString();
-                          RV1 = RV1.substr(1);
-                        } catch (...) {
-                          CV = true;
-                          break;
-                        }
-                      }
-                    }
-                    // cout << "LV : " << LV << "RV : " << RV << "RV1 : " << RV1
-                    // << endl;
-                  } else if (filterarray[j]["EXTRA"][k].IsInt() ||
-                             filterarray[j]["EXTRA"][k].IsDouble() ||
-                             filterarray[j]["EXTRA"][k]
-                                 .IsFloat())  // int,float 타입 이 부분도
-                                              // 수정필요 string과 int의 비교
-                  {  // int, float, double
-                    int tmpint;
-                    if (filterarray[j]["EXTRA"][k].IsInt()) {
-                      if (k == 0) {
-                        tmpint = filterarray[j]["EXTRA"][k].GetInt();
-                        RV = to_string(tmpint);
-                      } else {
-                        tmpint = filterarray[j]["EXTRA"][k].GetInt();
-                        RV1 = to_string(tmpint);
-                      }
-                    } else {  // float일 경우는 없음 --> 스트링으로 들어오기
-                              // 때문에 float RV =
-                              // filterarray[j]["EXTRA"][k].GetFloat();
-                    }
-                  }
-                }
-                // string betweenret = "LV : " + LV + " BETWEEN " + "RV : " + RV
-                // + " RV1 : " + RV1; cout << betweenret << endl;
-                // strcpy(msg.msg, betweenret.c_str());
-                // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-                // {
-                //     printf("msgget failed\n");
-                //     exit(0);
-                // }
-                // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-                // {
-                //     printf("msgsnd failed\n");
-                //     exit(0);
-                // }
-                CV = BetweenOperator(LV, RV, RV1);
-              } else {  // lv가 데시멀일때
-                // cout << filterarray[j]["LV"].GetString() << endl;
-                string LV = filterarray[j]["LV"].GetString();
-                LV = LV.substr(1);
-                // string RV;
-                // if (typedata[filterarray[j]["RV"].GetString()] == 254 ||
-                // typedata[filterarray[j]["RV"].GetString()] == 15)
-                // {
-                //     RV = typeBig(newlengthraw, newstartptr,
-                //     filterarray[j]["RV"].GetString(), rowbuf, lvtype);
-                // }
-                // else if (typedata[filterarray[j]["RV"].GetString()] == 246)
-                // {
-                //     RV = typeDecimal(newlengthraw, newstartptr,
-                //     filterarray[j]["RV"].GetString(), rowbuf, lvtype);
-                // }
-                // compareNE(LV, RV, CV, TmpV, canSaved, isnot);
-              }
-            } else {  // lv는 인트타입의 상수
-              int LV = filterarray[j]["LV"].GetInt();
-              // int RV;
-              // RV = typeLittle(typedata, filterarray[j]["RV"].GetString(),
-              // newlengthraw, newstartptr, rowbuf, lvtype); compareNE(LV, RV,
-              // CV, TmpV, canSaved, isnot);
-            }
-            // }
-            if (isnot) {
-              if (CV) {
-                CV = false;
-                canSaved = false;
+          break;
+        }
+        case LE: {
+          if (filterresult.filter_info.table_filter[j].LeftValue.isColumn[0]) {
+            if (filterresult.filter_info.table_filter[j]
+                    .RightValue.isColumn[0]) {
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) <=
+                  atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .RightValue.value[0]][i]
+                           .getVal()
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
               } else {
-                CV = true;
-                canSaved = true;
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
+            } else {
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) <=
+                  atof(filterresult.filter_info.table_filter[j]
+                           .RightValue.value[0]
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
               }
             }
-            /* code */
-            break;
-          case IN:  //고민이 좀 필요한 부분 만약 데이터타입이 다 맞춰서
-                    //들어온다면?
-            /* code */
-            // if (Passed)
-            // {
-            //     cout << "*Row Filtered*" << endl;
-            //     break;
-            // }
-            // else
-            // {
-            if (substringflag) {
-              Value &Extra = filterarray[j]["EXTRA"];
-              CV = InOperator(tmpsubstring, Extra, typedata, rowbuf);
-              substringflag = false;
+          }
+          break;
+        }
+        case GT: {
+          if (filterresult.filter_info.table_filter[j].LeftValue.isColumn[0]) {
+            if (filterresult.filter_info.table_filter[j]
+                    .RightValue.isColumn[0]) {
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) >
+                  atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .RightValue.value[0]][i]
+                           .getVal()
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
             } else {
-              if (filterarray[j]["LV"]
-                      .IsString()) {  // 6은 스트링 --> 스트링이다는
-                                      // 컬럼이름이거나 char이거나 decimal이다
-                if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                    typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                    typedata[filterarray[j]["LV"].GetString()] ==
-                        8)  //리틀에디안
-                {
-                  int LV = typeLittle(typedata,
-                                      filterarray[j]["LV"].GetString(), rowbuf);
-                  Value &Extra = filterarray[j]["EXTRA"];
-                  CV = InOperator(LV, Extra, typedata, rowbuf);
-                } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                           typedata[filterarray[j]["LV"].GetString()] ==
-                               15)  //빅에디안
-                {
-                  string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-                  Value &Extra = filterarray[j]["EXTRA"];
-                  // Extra = filterarray[j]["EXTRA"].GetArray();
-                  CV = InOperator(LV, Extra, typedata, rowbuf);
-                  // cout << "type big" << endl;
-                } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                           246)  //예외 Decimal일때
-                {
-                  string LV =
-                      typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-                  Value &Extra = filterarray[j]["EXTRA"];
-                  CV = InOperator(LV, Extra, typedata, rowbuf);
-                } else {
-                  string LV = filterarray[j]["LV"].GetString();
-                  LV = LV.substr(1);
-                  Value &Extra = filterarray[j]["EXTRA"];
-                  CV = InOperator(LV, Extra, typedata, rowbuf);
-                }
-              } else {  // lv는 인트타입의 상수
-                int LV = filterarray[j]["LV"].GetInt();
-                Value &Extra = filterarray[j]["EXTRA"];
-                CV = InOperator(LV, Extra, typedata, rowbuf);
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) >
+                  atof(filterresult.filter_info.table_filter[j]
+                           .RightValue.value[0]
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
               }
             }
-            // }
-            break;
-          case IS:  // NULL형식에 대한 확인 필요
-            /* code */
-            break;
-          case ISNOT:
-            /* code */
-            break;
-          case NOT:
-            // if (Passed)
-            // {
-            //     break;
-            // }
-            if (isnot) {
-              isnot = false;
-              // j++;
+          }
+          break;
+        }
+        case LT: {
+          if (filterresult.filter_info.table_filter[j].LeftValue.isColumn[0]) {
+            if (filterresult.filter_info.table_filter[j]
+                    .RightValue.isColumn[0]) {
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) <
+                  atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .RightValue.value[0]][i]
+                           .getVal()
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
             } else {
-              isnot = true;
-              // j++;
+              if (atof(filterresult
+                           .data[filterresult.filter_info.table_filter[j]
+                                     .LeftValue.value[0]][i]
+                           .getVal()
+                           .c_str()) <
+                  atof(filterresult.filter_info.table_filter[j]
+                           .RightValue.value[0]
+                           .c_str())) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
             }
-            /* code */
-            break;
-          case AND:
-            // if(isfirst1){
-            //     isfirst1 = false;
-            //     break;
-            // }
-            isnot = false;
-            if (CV == false) {  // f and t or t and t
-              Passed = true;
+          }
+          break;
+        }
+        case ET: {
+          if (filterresult.filter_info.table_filter[j].LeftValue.isColumn[0]) {
+            if (filterresult.filter_info.table_filter[j]
+                    .RightValue.isColumn[0]) {
+              if (filterresult
+                      .data[filterresult.filter_info.table_filter[j]
+                                .LeftValue.value[0]][i]
+                      .getVal() ==
+                  filterresult
+                      .data[filterresult.filter_info.table_filter[j]
+                                .RightValue.value[0]][i]
+                      .getVal()
+                      .c_str()) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
             } else {
-              TmpV = CV;
-              // PrevOper = 1;
+              if (filterresult
+                      .data[filterresult.filter_info.table_filter[j]
+                                .LeftValue.value[0]][i]
+                      .getVal()
+                      .c_str() == filterresult.filter_info.table_filter[j]
+                                      .RightValue.value[0]
+                                      .c_str()) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
             }
-            /* code */
-            break;
-          case OR:
-            isnot = false;
-            if (CV == true) {
-              isSaved = true;
-              // cout << "Saved or" << endl;
-              // SavedRow(Rawrowdata[i]);
+          }
+          break;
+        }
+        case NE: {
+          if (filterresult.filter_info.table_filter[j].LeftValue.isColumn[0]) {
+            if (filterresult.filter_info.table_filter[j]
+                    .RightValue.isColumn[0]) {
+              if (filterresult
+                      .data[filterresult.filter_info.table_filter[j]
+                                .LeftValue.value[0]][i]
+                      .getVal() !=
+                  filterresult
+                      .data[filterresult.filter_info.table_filter[j]
+                                .RightValue.value[0]][i]
+                      .getVal()
+                      .c_str()) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
             } else {
-              TmpV = true;
-              // PrevOper = 0;
-              Passed = false;
+              if (filterresult
+                      .data[filterresult.filter_info.table_filter[j]
+                                .LeftValue.value[0]][i]
+                      .getVal()
+                      .c_str() != filterresult.filter_info.table_filter[j]
+                                      .RightValue.value[0]
+                                      .c_str()) {
+                filterresult.filter_info.filterResults.emplace_back(true);
+              } else {
+                filterresult.filter_info.filterResults.emplace_back(false);
+              }
             }
-            /* code */
-            break;
-          case SUBSTRING:
-            // 1. LV에서 Value를 읽는다.(아마 대부분 column일것)
-            // 2. RV에서 Value를 읽고, LV의 SUBSTRING을 구한다.
-            // 3. LV의 SUBSTRING을 저장한다.
-            // 4. SUBSTRING FLAG를 On한다.
-            int subFrom;
-            int subFor;
-            if (typedata[filterarray[j]["LV"].GetString()] == 3 ||
-                typedata[filterarray[j]["LV"].GetString()] == 14 ||
-                typedata[filterarray[j]["LV"].GetString()] == 8)  //리틀에디안
-            {
-              int LV = typeLittle(typedata, filterarray[j]["LV"].GetString(),
-                                  rowbuf);
-              // Value &Extra = filterarray[j]["EXTRA"];
-              // CV = InOperator(LV, Extra, typedata, rowbuf);
-            } else if (typedata[filterarray[j]["LV"].GetString()] == 254 ||
-                       typedata[filterarray[j]["LV"].GetString()] ==
-                           15)  //빅에디안
-            {
-              string LV = typeBig(filterarray[j]["LV"].GetString(), rowbuf);
-              subFrom = atoi(filterarray[j]["RV"][0].GetString());
-              subFor = atoi(filterarray[j]["RV"][1].GetString());
-              tmpsubstring = LV.substr(subFrom, subFor);
-              // Value &Extra = filterarray[j]["EXTRA"];
-              // // Extra = filterarray[j]["EXTRA"].GetArray();
-              // CV = InOperator(LV, Extra, typedata, rowbuf);
-              // cout << "type big" << endl;
-            } else if (typedata[filterarray[j]["LV"].GetString()] ==
-                       246)  //예외 Decimal일때
-            {
-              string LV = typeDecimal(filterarray[j]["LV"].GetString(), rowbuf);
-              // Value &Extra = filterarray[j]["EXTRA"];
-              // CV = InOperator(LV, Extra, typedata, rowbuf);
-            } else {
-              string LV = filterarray[j]["LV"].GetString();
-              LV = LV.substr(1);
-              // Value &Extra = filterarray[j]["EXTRA"];
-              // CV = InOperator(LV, Extra, typedata, rowbuf);
-            }
-            substringflag = true;
-            break;
-          default:
-            cout << "error this is no default" << endl;
-            break;
+          }
+          break;
+        }
+        case LIKE: {
+          break;
+        }
+        case BETWEEN: {
+          filterresult.filter_info.filterResults.emplace_back(BetweenOperator(
+              filterresult
+                  .data[filterresult.filter_info.table_filter[j]
+                            .LeftValue.value[0]][i]
+                  .getVal(),
+              filterresult.filter_info.table_filter[j].RightValue.value[0],
+              filterresult.filter_info.table_filter[j].RightValue.value[1]));
+          break;
+        }
+        case IN: {
+          break;
+        }
+        case IS: {
+          break;
+        }
+        case ISNOT: {
+          break;
+        }
+        case NOT: {
+          break;
+        }
+        case AND: {
+          filterresult.filter_info.logicalOperators.emplace_back('&');
+          break;
+        }
+        case OR: {
+          filterresult.filter_info.logicalOperators.emplace_back('|');
+          break;
+        }
+        case SUBSTRING: {
+          break;
         }
       }
-      // cout << CV << endl;
-      if (isSaved == true) {  // or을 통해 저장되었다면
-        char *ptr = rowbuf;
-        if (i == scanResult.row_count - 1) {
-          // char *tmpsave = new char[scanResult.scan_size -
-          // scanResult.row_offset[i]]; memcpy(tmpsave, ptr +
-          // scanResult.row_offset[i], scanResult.scan_size -
-          // scanResult.row_offset[i]); SavedRow(tmpsave, filteroffset,
-          // filterresult, scanResult.scan_size - scanResult.row_offset[i]);
-          // filteroffset += scanResult.scan_size - scanResult.row_offset[i];
-          // free(tmpsave);
-          // scan_size -> length
-          // char *tmpsave = new char[scanResult.length -
-          // scanResult.row_offset[i]];
-          char tmpsave[scanResult.length - scanResult.row_offset[i]];  // jh
-          //여기 수정 필요
-          memcpy(tmpsave, ptr + scanResult.row_offset[i],
-                 scanResult.length - scanResult.row_offset[i]);
-          SavedRow(tmpsave, filteroffset, filterresult,
-                   scanResult.length - scanResult.row_offset[i]);
-          filteroffset += scanResult.length - scanResult.row_offset[i];
-          // free(tmpsave);//jh
+    }
+    bool rowFilterResult = false;
+    int lvCnt = 0;
+    int rvCnt = 1;
+    for (int j = 0; i < filterresult.filter_info.logicalOperators.size(); j++) {
+      if (filterresult.filter_info.logicalOperators[j] == '&') {
+        if (filterresult.filter_info.filterResults[lvCnt] &&
+            filterresult.filter_info.filterResults[rvCnt]) {
+          rowFilterResult = true;
         } else {
-          // char *tmpsave = new char[scanResult.row_offset[i + 1] -
-          // scanResult.row_offset[i]];
-          char tmpsave[scanResult.row_offset[i + 1] -
-                       scanResult.row_offset[i]];  // jh
-          memcpy(tmpsave, ptr + scanResult.row_offset[i],
-                 scanResult.row_offset[i + 1] - scanResult.row_offset[i]);
-          SavedRow(tmpsave, filteroffset, filterresult,
-                   scanResult.row_offset[i + 1] - scanResult.row_offset[i]);
-          filteroffset +=
-              scanResult.row_offset[i + 1] - scanResult.row_offset[i];
-          // free(tmpsave);//jh
+          rowFilterResult = false;
+          break;
         }
-        break;
-      }
-    }
-
-    // }
-    if (canSaved == true && isSaved == false && Passed != true &&
-        CV == true) {  // and를 통해 저장된다면
-      // cout << "*Save Row*" << endl;
-      char *ptr = rowbuf;
-      // for(int k = 0; k < )
-      if (i == scanResult.row_count - 1) {
-        // // cout << scanResult.scan_size - scanResult.row_offset[i] << endl;
-        // char *tmpsave = new char[scanResult.scan_size -
-        // scanResult.row_offset[i]]; memcpy(tmpsave, ptr +
-        // scanResult.row_offset[i], scanResult.scan_size -
-        // scanResult.row_offset[i]); SavedRow(tmpsave, filteroffset,
-        // filterresult, scanResult.scan_size - scanResult.row_offset[i]);
-        // filteroffset += scanResult.scan_size - scanResult.row_offset[i];
-        // free(tmpsave);
-        // scan_size -> length
-        // cout << scanResult.scan_size - scanResult.row_offset[i] << endl;
-        // char *tmpsave = new char[scanResult.length -
-        // scanResult.row_offset[i]];
-        char tmpsave[scanResult.length - scanResult.row_offset[i]];  // jh
-        memcpy(tmpsave, ptr + scanResult.row_offset[i],
-               scanResult.length - scanResult.row_offset[i]);
-        SavedRow(tmpsave, filteroffset, filterresult,
-                 scanResult.length - scanResult.row_offset[i]);
-        filteroffset += scanResult.length - scanResult.row_offset[i];
-        // free(tmpsave);//jh
+        lvCnt += 2;
+        rvCnt += 2;
       } else {
-        // cout << scanResult.row_offset[i + 1] - scanResult.row_offset[i] <<
-        // endl; char *tmpsave = new char[scanResult.row_offset[i + 1] -
-        // scanResult.row_offset[i]];
-        char tmpsave[scanResult.row_offset[i + 1] -
-                     scanResult.row_offset[i]];  // jh
-        memcpy(tmpsave, ptr + scanResult.row_offset[i],
-               scanResult.row_offset[i + 1] - scanResult.row_offset[i]);
-        SavedRow(tmpsave, filteroffset, filterresult,
-                 scanResult.row_offset[i + 1] - scanResult.row_offset[i]);
-        filteroffset += scanResult.row_offset[i + 1] - scanResult.row_offset[i];
-        // free(tmpsave);//jh
+        if (filterresult.filter_info.filterResults[lvCnt] ||
+            filterresult.filter_info.filterResults[rvCnt]) {
+          rowFilterResult = true;
+        } else {
+          rowFilterResult = false;
+          break;
+        }
+        lvCnt += 2;
+        rvCnt += 2;
       }
-
-      // delete[] tmpsave;
-      // cout << tmpsave[0] << endl;
-      //  cout << Rawrowdata[i] << endl;
     }
-    // string lebetween = "*Row End";
-    // cout << "endrow" << endl;
-    // strcpy(msg.msg, lebetween.c_str());
-    // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-    // {
-    //     printf("msgget failed\n");
-    //     exit(0);
-    // }
-    // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-    // {
-    //     printf("msgsnd failed\n");
-    //     exit(0);
-    // }
+    if (rowFilterResult) {
+      filterresult.filter_info.filteredIndex.emplace_back(i);
+    }
   }
-  // std::cout << "  ------" << std::endl;
-  // clock_t finish = clock();
-  // cout << "BLOCK FILTER TIME" << endl;
-  // cout << (double)(finish - start) / CLOCKS_PER_SEC << endl;
-  // cout << "-------------------------------------------------------" << endl;
-
   sendfilterresult(filterresult);
   // cout << rownum << endl;
   return 0;
 }
 
 void Filter::sendfilterresult(Result &filterresult_) {
-  // string abc(filterresult_.data);
-  // cout << abc << endl;
-  // printf("~~sendfilterresult~~ length: %d",filterresult_.totallength);
-  // key_t key = 12345;
-  // int msqid;
-  // message msg;
-  // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-  // {
-  //     printf("msgget failed\n");
-  //     exit(0);
-  // }
-  // cout << "filter" << endl;
-  // ostringstream oss;
-  // for (int i = 0; filterresult_.data + i < filterresult_.ptr; i++)
-  // {
-  //     cout << hex << (int)filterresult_.data[i];
-  // }
-  // for (int i = 0; i < 50; i ++){
-  //     cout << hex << (int)filterresult_.data[i];
-  // }
-  // cout << filterresult_.data << endl;
-  // string lebetween = "After Filter Result : \nRows : " +
-  // to_string(filterresult_.rows) + "\nRow Data : \n" + oss.str();
-  // strcpy(msg.msg, lebetween.c_str());
-  // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-  // {
-  //     printf("msgsnd failed\n");
-  //     exit(0);
-  // }
-
-  // cout << "\n----------------------------------------------\n";
-  // for (int i = 0; i < filterresult_.totallength; i++)
-  // {
-  //     printf("%02X", (u_char)filterresult_.data[i]);
-  // }
-  // cout << "------------------------------------------------\n";
   cout << "filter result push :: sstFileName -> " << filterresult_.sst_name
-       << endl;
+       << ", filteredRowCount -> "
+       << filterresult_.filter_info.filteredIndex.size() << endl;
   mergeManager->push_work(filterresult_);
 }
 
@@ -1723,75 +568,6 @@ bool Filter::IsOperator(string lv, char *nonnullbit, int isnot) {
   }
 }
 
-void Filter::SavedRow(char *row, int startoff, Result &filterresult,
-                      int nowlength) {
-  // cout << "[Saved Row(HEX)] VALUE: ";
-  //  for (int k = 0; k < nowlength; k++)
-  //  {
-  //      printf("%02X",(u_char)row[k]);
-  //  }
-  //  cout << endl;
-  // cout << "saved row" << endl;
-  rownum++;
-  filterresult.row_count++;
-  filterresult.row_offset.push_back(startoff);
-  int newlen = 0;
-  vector<int> column_startptr;
-
-  //(수정) Filter의 Column filtering 삭제
-  // for(int i = 0; i < column_filter.size(); i++){
-  //     GetColumnoff(column_filter[i]);
-  //     memcpy(filterresult.data+filterresult.length, row +
-  //     newstartptr[column_filter[i]], newlengthraw[column_filter[i]]); newlen
-  //     += newlengthraw[column_filter[i]]; filterresult.length += newlen;
-  //     column_startptr.push_back(newstartptr[column_filter[i]]);
-  // }
-  // filterresult.row_column_offset.push_back(column_startptr);
-
-  // filterresult.length += newlen;
-
-  filterresult.data = filterresult.data + row;
-  filterresult.length += nowlength;
-
-  // for (int i = 0; i < nowlength; i++)
-  // {
-  //     *filterresult.ptr++ = row[i];
-  // }
-  // key_t key = 12345;
-  // int msqid;
-  // message msg;
-  // msg.msg_type = 1;
-  // if ((msqid = msgget(key, IPC_CREAT | 0666)) == -1)
-  // {
-  //     printf("msgget failed\n");
-  //     exit(0);
-  // }
-  // string saveret = "*Saved Row";
-  // strcpy(msg.msg, saveret.c_str());
-  // if (msgsnd(msqid, &msg, sizeof(msg.msg), 0) == -1)
-  // {
-  //     printf("msgsnd failed\n");
-  //     exit(0);
-  // }
-  // writefile.write(saveret.c_str(),saveret.size());
-
-  // printf("~~SavedRow~~ # blockid: %d, rows: %d, length: %d, offset_len: %ld,
-  // data_len: %ld",filterresult.block_id, filterresult.rows,
-  // filterresult.totallength, filterresult.offset.size(),
-  // filterresult.data.size());
-
-  // cout << endl;
-  //  sendrow.push_back(row[testsmall_line_col[0]] + "," +
-  //  row[testsmall_line_col[1]] + "," + row[testsmall_line_col[3]] + "," +
-  //  row[testsmall_line_col[3]] + "," + row[testsmall_line_col[4]] + "," +
-  //  row[testsmall_line_col[5]] + "," + row[testsmall_line_col[6]] + "," +
-  //  row[testsmall_line_col[7]] + "," + row[testsmall_line_col[8]] + "," +
-  //  row[testsmall_line_col[9]] + "," + row[testsmall_line_col[10]] + "," +
-  //  row[testsmall_line_col[11]] + "," + row[testsmall_line_col[12]] + "," +
-  //  row[testsmall_line_col[13]] + "," + row[testsmall_line_col[14]] + "," +
-  //  row[testsmall_line_col[15]] );
-}
-
 vector<string> Filter::split(string str, char Delimiter) {
   istringstream iss(str);  // istringstream에 str을 담는다.
   string buffer;  // 구분자를 기준으로 절삭된 문자열이 담겨지는 버퍼
@@ -1817,447 +593,6 @@ bool Filter::isvarc(vector<int> datatype, int ColNum,
     }
   }
   return isvarchar;
-}
-
-// void Filter::makedefaultmap(vector<string> ColName, vector<int> startoff,
-// vector<int> offlen, vector<int> datatype, int ColNum, unordered_map<string,
-// int> &startptr, unordered_map<string, int> &lengthRaw, unordered_map<string,
-// int> &typedata)
-// {
-//     for (int i = 0; i < ColNum; i++)
-//     {
-//         startptr.insert(make_pair(ColName[i], startoff[i]));
-//         lengthRaw.insert(make_pair(ColName[i], offlen[i]));
-//         typedata.insert(make_pair(ColName[i], datatype[i]));
-//     }
-// }
-
-// void Filter::makenewmap(int isvarchar, int ColNum, unordered_map<string, int>
-// &newstartptr, unordered_map<string, int> &newlengthraw, vector<int> datatype,
-// unordered_map<string, int> lengthRaw, vector<string> ColName, int &iter,
-// vector<int> startoff, vector<int> offlen, char *rowbuf)
-// {
-//     bool aftervarchar = 0;
-//     int rowlength = 0;
-//     if (isvarchar == 1)
-//     {
-//         newstartptr.clear();
-//         newlengthraw.clear();
-//         for (int j = 0; j < ColNum; j++)
-//         {
-//             int newofflen = 0;
-//             if (datatype[j] == 15 || aftervarchar == 1)
-//             {
-//                 aftervarchar = 1;
-//                 if (datatype[j] == 15)
-//                 { //맨 앞 컬럼 타입이 varchar일 경우 길이를 새로 구하고 그
-//                 길이로 시작 인덱스를 구하는데, 그 이후의 모든 시작인덱스를
-//                 구해줘야함
-//                     if (lengthRaw[ColName[j]] < 256)
-//                     { // varchar 길이 1바이트
-//                         if (j == 0)
-//                         {
-//                             newofflen = (int)rowbuf[iter + startoff[j]];
-//                             newstartptr.insert(make_pair(ColName[j], iter +
-//                             startoff[j] + 1));
-//                             newlengthraw.insert(make_pair(ColName[j],
-//                             newofflen));
-//                         }
-//                         else
-//                         {
-//                             // cout << newstartptr[testsmall_line_col[j-1]] +
-//                             newlengthraw[testsmall_line_col[j-1]] << endl;
-//                             newofflen = (int)rowbuf[newstartptr[ColName[j -
-//                             1]] + newlengthraw[ColName[j - 1]]];
-//                             newstartptr.insert(make_pair(ColName[j],
-//                             newstartptr[ColName[j - 1]] +
-//                             newlengthraw[ColName[j - 1]] + 1));
-//                             newlengthraw.insert(make_pair(ColName[j],
-//                             newofflen));
-//                             // cout << "newofflen = " << (int)rowbuf[iter +
-//                             newstartptr[testsmall_line_col[j-1]] +
-//                             newlengthraw[testsmall_line_col[j-1]]] << endl;
-//                         }
-//                     }
-//                     else if (lengthRaw[ColName[j]] >= 256)
-//                     {
-//                         // varchar 길이 2바이트
-//                         char lenbuf[4];
-//                         lenbuf[2] = 0x00;
-//                         lenbuf[3] = 0x00;
-//                         int *lengthtmp;
-//                         if (j == 0)
-//                         {
-//                             for (int k = 0; k < 2; k++)
-//                             {
-//                                 lenbuf[k] = rowbuf[iter + startoff[j] + k];
-//                                 lengthtmp = (int *)lenbuf;
-//                             }
-//                             newofflen = lengthtmp[0];
-//                             newstartptr.insert(make_pair(ColName[j], iter +
-//                             startoff[j] + 2));
-//                             newlengthraw.insert(make_pair(ColName[j],
-//                             newofflen));
-//                         }
-//                         else
-//                         {
-//                             // cout << newstartptr[testsmall_line_col[j-1]] +
-//                             newlengthraw[testsmall_line_col[j-1]] << endl;
-//                             for (int k = 0; k < 2; k++)
-//                             {
-//                                 lenbuf[k] = rowbuf[newstartptr[ColName[j -
-//                                 1]] + newlengthraw[ColName[j - 1]] + k];
-//                                 lengthtmp = (int *)lenbuf;
-//                             }
-//                             newofflen = lengthtmp[0];
-//                             newstartptr.insert(make_pair(ColName[j],
-//                             newstartptr[ColName[j - 1]] +
-//                             newlengthraw[ColName[j - 1]] + 2));
-//                             newlengthraw.insert(make_pair(ColName[j],
-//                             newofflen));
-//                             // cout << "newofflen = " << (int)rowbuf[iter +
-//                             newstartptr[testsmall_line_col[j-1]] +
-//                             newlengthraw[testsmall_line_col[j-1]]] << endl;
-//                         }
-//                     }
-//                 }
-//                 else
-//                 {
-//                     newstartptr.insert(make_pair(ColName[j],
-//                     newstartptr[ColName[j - 1]] + newlengthraw[ColName[j -
-//                     1]])); newlengthraw.insert(make_pair(ColName[j],
-//                     offlen[j]));
-//                 }
-//             }
-//             else
-//             {
-//                 newstartptr.insert(make_pair(ColName[j], iter +
-//                 startoff[j]));
-//                 // cout << iter + startoff[j] << endl;
-//                 newlengthraw.insert(make_pair(ColName[j], offlen[j]));
-//             }
-//         }
-//         // cout << newstartptr[testsmall_line_col[ColNum - 1]] << " " <<
-//         testsmall_line_col[ColNum - 1] << endl;
-//         // iter = newstartptr[ColName[ColNum - 1]] +
-//         newlengthraw[ColName[ColNum - 1]];
-//         // cout << iter << endl;
-//     }
-//     else
-//     {
-//         for (int j = 0; j < ColNum; j++)
-//         {
-//             newstartptr.insert(make_pair(ColName[j], iter + startoff[j]));
-//             newlengthraw.insert(make_pair(ColName[j], offlen[j]));
-//         }
-//         // newstartptr = startptr;
-//         // newlengthraw = lengthRaw;
-//         // rowlength = startoff[ColNum - 1] + offlen[ColNum - 1];
-//     }
-//     iter = newstartptr[ColName[ColNum - 1]] + newlengthraw[ColName[ColNum -
-//     1]];
-// }
-
-void Filter::compareGE(string LV, string RV, bool &CV, bool &TmpV,
-                       bool &canSaved, bool isnot) {
-  if (LV >= RV) {
-    // cout << "LV is ge" << endl;
-    // cout << LV << " " << OneRow[WhereClauses[j+1]] << endl;
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-
-void Filter::compareGE(int LV, int RV, bool &CV, bool &TmpV, bool &canSaved,
-                       bool isnot) {
-  if (LV >= RV) {
-    // cout << "LV is ge" << endl;
-    // cout << LV << " " << OneRow[WhereClauses[j+1]] << endl;
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-
-void Filter::compareLE(string LV, string RV, bool &CV, bool &TmpV,
-                       bool &canSaved, bool isnot) {
-  if (LV <= RV) {
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareLE(int LV, int RV, bool &CV, bool &TmpV, bool &canSaved,
-                       bool isnot) {
-  if (LV <= RV) {
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareGT(string LV, string RV, bool &CV, bool &TmpV,
-                       bool &canSaved, bool isnot) {
-  if (LV > RV) {
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareGT(int LV, int RV, bool &CV, bool &TmpV, bool &canSaved,
-                       bool isnot) {
-  if (LV > RV) {
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareLT(string LV, string RV, bool &CV, bool &TmpV,
-                       bool &canSaved, bool isnot) {
-  if (LV < RV) {
-    // cout << "LV is small" << endl;
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareLT(int LV, int RV, bool &CV, bool &TmpV, bool &canSaved,
-                       bool isnot) {
-  if (LV < RV) {
-    // cout << "LV is small" << endl;
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareET(string LV, string RV, bool &CV, bool &TmpV,
-                       bool &canSaved, bool isnot) {
-  LV = trim(LV);
-  RV = trim(RV);
-  if (LV == RV) {
-    // cout << "same" << endl;
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareET(int LV, int RV, bool &CV, bool &TmpV, bool &canSaved,
-                       bool isnot) {
-  if (LV == RV) {
-    // cout << "same" << endl;
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-
-void Filter::compareNE(string LV, string RV, bool &CV, bool &TmpV,
-                       bool &canSaved, bool isnot) {
-  if (LV != RV) {
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {  //의미 없음 tmpv 가 false일 경우는 passed
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
-}
-void Filter::compareNE(int LV, int RV, bool &CV, bool &TmpV, bool &canSaved,
-                       bool isnot) {
-  if (LV != RV) {
-    if (TmpV == true) {
-      CV = true;
-      canSaved = true;
-    } else {  //의미 없음 tmpv 가 false일 경우는 passed
-      CV = false;
-      canSaved = false;
-    }
-  } else {
-    CV = false;
-    canSaved = false;
-  }
-  if (isnot) {
-    if (CV) {
-      CV = false;
-      canSaved = false;
-    } else {
-      CV = true;
-      canSaved = true;
-    }
-  }
 }
 
 int Filter::typeLittle(unordered_map<string, int> typedata, string colname,
