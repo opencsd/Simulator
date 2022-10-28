@@ -4,5 +4,5 @@ project(src
 )
 
 add_subdirectory(csdWorkerModule)
-add_subdirectory(grpc)
+add_subdirectory(logger)
 add_subdirectory(storageEngineInstance)

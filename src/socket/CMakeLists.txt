@@ -1,11 +1,11 @@
-project(WALManager
+project(socket
         LANGUAGES    CXX
         VERSION     0.1
 )
 
 
-add_library(WALManager
-        "WalManager.cc"        
+link_libraries(
+    pthread
 )
 target_link_libraries(WALManager
         cpprest
@@ -14,7 +14,11 @@ target_link_libraries(WALManager
         grpc_modules
 )
 
-target_include_directories(WALManager
+add_library(socket_module
+       "socket.cc"
+)
+
+target_include_directories(socket_module
 PUBLIC
         ${CMAKE_SOURCE_DIR}/include
         ${CMAKE_SOURCE_DIR}/include/rapidjson

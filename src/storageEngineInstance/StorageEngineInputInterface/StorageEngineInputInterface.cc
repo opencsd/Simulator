@@ -253,7 +253,7 @@ void EngineModule::AppendDependencyProjection(
 
 void EngineModule::testrun(string dirname, string jsonPath) {
   cout << "Run Engine Module" << endl;
-  tblManager.init_TableManager(jsonPath);
+  tblManager.init_TableManager();
   cout << "TableManager Init Done" << endl;
   time_t st = time(0);
   queue<SnippetStruct> snippetqueue;

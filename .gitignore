@@ -166,6 +166,9 @@ backup
 required
 thirdparty/rocksdb/librocksdb.a
 dockerbuild/_output/CSDInstance
+dockerbuild/csdWorkerModule/_output/CSDInstance
+dockerbuild/storageEngineInstance_output/CSDInstance
+dockerbuild/storageEngineInstance_output/EngineInstance
 .vscode
 
 ### CMake Patch ###

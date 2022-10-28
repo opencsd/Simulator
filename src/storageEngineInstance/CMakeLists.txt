@@ -16,7 +16,6 @@ add_subdirectory(SnippetManager)
 add_subdirectory(StorageEngineInputInterface)
 add_subdirectory(TableAccess)
 add_subdirectory(TableManager)
-add_subdirectory(WALManager)
 
 
 
@@ -26,7 +25,7 @@ add_dependencies(SnippetScheduler CSDManager WALManager)
 add_dependencies(buffer_manager TableManager SnippetScheduler)
 add_dependencies(MergeQueryManager buffer_manager)
 add_dependencies(SnippetManager MergeQueryManager)
-add_dependencies(StorageEngineInputInterface SnippetManager WALManager)
+add_dependencies(StorageEngineInputInterface SnippetManager
 
 
 add_executable(EngineInstance 

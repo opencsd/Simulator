@@ -161,8 +161,8 @@ int BufferManager::InitWork(int qid, int wid, string table_alias,
                             vector<int> table_offlen_, int total_block_cnt_,
                             vector<string> sstList) {
   if (sstList.size() > 0) {
-    SendCSDReturn(qid, wid, table_alias, table_column_, return_datatype,
-                  table_offlen_, total_block_cnt_);
+    // SendCSDReturn(qid, wid, table_alias, table_column_, return_datatype,
+    //               table_offlen_, total_block_cnt_);
   }
   if (m_BufferManager.find(qid) == m_BufferManager.end()) {
     InitQuery(qid);

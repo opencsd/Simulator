@@ -112,8 +112,6 @@ struct BlockResult {
         Value &colVec = colData[j];
         vectortype tmpType;
         tmpType.strvec = colVec["strVec"].GetString();
-        tmpType.intvec = colVec["intVec"].GetInt64();
-        tmpType.floatvec = colVec["floatVec"].GetDouble();
         tmpType.type = colVec["type"].GetInt();
         csd_table_data[colName].push_back(tmpType);
       }

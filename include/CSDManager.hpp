@@ -4,18 +4,19 @@
 #include <vector>
 
 #include "document.h"
+#include "logger.hpp"
 #include "prettywriter.h"
 #include "stringbuffer.h"
 #include "writer.h"
+
+#define CSD_GEN "GeneratedCSD.json"
+#define CSD_ENV "CSDGENPATH"
 
 using namespace std;
 
 struct CSDInfo {
   string CSDIP;
-  string CSDReplica;
-  int CSDWorkingBlock;
   vector<string> SSTList;
-  vector<string> CSDList;
 };
 
 class CSDManager {
@@ -29,4 +30,5 @@ class CSDManager {
 
  private:
   unordered_map<string, CSDInfo> CSD_Map_;
+  Logger logger;
 };

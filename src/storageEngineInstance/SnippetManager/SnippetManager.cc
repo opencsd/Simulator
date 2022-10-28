@@ -3,12 +3,6 @@ using namespace std;
 void SnippetManager::NewQuery(queue<SnippetStruct> newqueue,
                               BufferManager &buff, TableManager &tableManager_,
                               Scheduler &scheduler_, CSDManager &csdManager_) {
-  //스레드 생성
-  // while(!newqueue.empty()){
-  //     SnippetStruct a = newqueue.front();
-  //     cout << a.table_filter.Size() << endl;
-  //     newqueue.pop();
-  // }
   SavedRet tmpquery;
   tmpquery.NewQuery(newqueue);
 

@@ -3,6 +3,8 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
 #include <unistd.h>
 
 #include <cstdlib>
@@ -94,10 +96,8 @@ class Scheduler {
     int query_id;
     int work_id;
     string sstfilename;
-    // Value block_info_list;
     vector<string> table_col;
     vector<filterstruct> table_filter;
-    // Value table_filter;
     vector<int> table_offset;
     vector<int> table_offlen;
     vector<int> table_datatype;
@@ -110,20 +110,16 @@ class Scheduler {
     vector<int> returnType;
 
     Snippet(int query_id_, int work_id_, string sstfilename_,
-            // Value block_info_list_,
-            vector<string> table_col_,
-            // Value table_filter_,
-            vector<int> table_offset_, vector<int> table_offlen_,
-            vector<int> table_datatype_, vector<string> column_filtering_,
-            vector<string> Group_By_, vector<string> Order_By_,
-            vector<string> Expr_, vector<vector<Projection>> column_projection_,
+            vector<string> table_col_, vector<int> table_offset_,
+            vector<int> table_offlen_, vector<int> table_datatype_,
+            vector<string> column_filtering_, vector<string> Group_By_,
+            vector<string> Order_By_, vector<string> Expr_,
+            vector<vector<Projection>> column_projection_,
             vector<int> returnType_)
         : query_id(query_id_),
           work_id(work_id_),
           sstfilename(sstfilename_),
-          // block_info_list(block_info_list_),
           table_col(table_col_),
-          // table_filter(table_filter_),
           table_offset(table_offset_),
           table_offlen(table_offlen_),
           table_datatype(table_datatype_),
@@ -144,37 +140,17 @@ class Scheduler {
   } KETI_WORK_TYPE;
 
   void init_scheduler(CSDManager& csdmanager);
-  // void sched(int workid, Value& blockinfo,vector<int> offset, vector<int>
-  // offlen, vector<int> datatype, vector<string> tablecol, Value& filter,string
-  // sstfilename, string tablename, string res);
   void sched(int indexdata, CSDManager& csdmanager);
-  void csdworkdec(string csdname, int num);
   void Serialize(PrettyWriter<StringBuffer>& writer, Snippet& s, string csd_ip,
                  string tablename, string CSDName);
-  void Serialize(Writer<StringBuffer>& writer, Snippet& s, string csd_ip,
-                 int s_index, string tablename, string CSDName, int blockidnum);
-  string BestCSD(string sstname, int blockworkcount, CSDManager& csdmanager);
-  void CSDManagerDec(string csdname, int num);
-  void sendsnippet(string snippet, string ipaddr, int s_index);
-  // void addcsdip(Writer<StringBuffer>& writer, string s);
-  void printcsdblock() {
-    for (auto i = csdworkblock_.begin(); i != csdworkblock_.end(); i++) {
-      pair<std::string, int> k = *i;
-      cout << k.first << " " << k.second << endl;
-    }
-  }
+  void sendsnippet(string snippet);
 
  private:
   unordered_map<string, string> csd_;  // csd의 ip정보가 담긴 맵 <csdname,
                                        // csdip>
-  unordered_map<string, int>
-      csdworkblock_;  // csd의 block work 수 가 담긴 맵 <csdname, csdworknum>
-  vector<string> csdname_;
+  string csdname_[8] = {"csd1", "csd2", "csd3", "csd4",
+                        "csd5", "csd6", "csd7", "csd8"};
   unordered_map<string, string>
       sstcsd_;  // csd의 sst파일 보유 내용 <sstname, csdlist>
-  vector<string> csdpair_;
-  unordered_map<string, string> csdreaplicamap_;
-  unordered_map<string, vector<string>> csdlist_;
-  // CSDManager &csdmanager_;
-  int blockcount_;
+  Logger logger;
 };
