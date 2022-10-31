@@ -18,6 +18,9 @@ int BufferManager::Join() {
 }
 
 void BufferManager::BlockBufferInput() {
+  InitSocket(UNIX_SOCKET);
+  BindSocket("/data/blockBuffer.sock");
+  ListenSocket();
   int server_fd, client_fd;
   int opt = 1;
   struct sockaddr_in serv_addr, client_addr;

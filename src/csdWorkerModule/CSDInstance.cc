@@ -16,9 +16,10 @@ using namespace std;
 // std::string dev_name = "/dev/sda";
 // -----------------------------------------------------------------
 
-int main(/*int argc, char **argv*/) {
+int main(int argc, char **argv) {
   // std::string filename = argv[1];
   // const char *file_path = filename.c_str();
+
   cout << 1 << endl;
   TableManager CSDTableManager;
   cout << 2 << endl;
@@ -27,8 +28,12 @@ int main(/*int argc, char **argv*/) {
   Return returnManager(CSDTableManager);
   MergeManager mergeManager(&returnManager);
   Filter filterManager(&mergeManager);
-  Scan scanManager(CSDTableManager, &filterManager, &mergeManager);
 
+  Scan scanManager(CSDTableManager, &filterManager, &mergeManager);
+  if (argc > 1) {
+    string csdName = argv[1];
+    scanManager.SetCSDName(csdName);
+  }
   thread ReturnInterface = thread(&Return::ReturnResult, &returnManager);
   thread InputInterface = thread(&Scan::InputSnippet, &scanManager);
   // Scan scan = Scan(CSDTableManager);

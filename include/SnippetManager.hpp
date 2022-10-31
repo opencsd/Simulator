@@ -21,7 +21,6 @@
 #include "MergeQueryManager.hpp"
 // #include "CSDScheduler.h"
 #include "document.h"
-#include "grpc/snippet_sample.grpc.pb.h"
 #include "prettywriter.h"
 #include "stringbuffer.h"
 #include "test/testmodule.hpp"

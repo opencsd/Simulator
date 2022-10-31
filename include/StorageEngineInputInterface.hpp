@@ -11,6 +11,8 @@
 
 #include <algorithm>
 #include <atomic>
+#include <boost/asio.hpp>
+#include <boost/thread.hpp>
 #include <ctime>
 #include <filesystem>
 #include <fstream>
@@ -24,20 +26,10 @@
 #include <unordered_map>
 #include <vector>
 
-// Include boost thread
-#include <google/protobuf/empty.pb.h>
-#include <grpcpp/grpcpp.h>
-
-#include <boost/asio.hpp>
-#include <boost/thread.hpp>
-
 #include "CSDScheduler.hpp"
 #include "SnippetManager.hpp"
-#include "WalManager.hpp"
 #include "document.h"
-#include "logger.hpp"
 #include "prettywriter.h"
-#include "socket.hpp"
 #include "stringbuffer.h"
 #include "writer.h"
 
@@ -54,15 +46,19 @@ class EngineModule {
   CSDManager csdmanager;
   Scheduler csdscheduler;
   BufferManager bufma;
+  string dirName;
+  string jsonPath;
   // SnippetManager snippetmanager(tblManager,csdscheduler,csdmanager);
   SnippetManager snippetmanager;
   EngineModule() {
     csdscheduler.init_scheduler(csdmanager);
     bufma.InitBufferManager(csdscheduler);
   }
+  EngineModule(string dirname, string jsonPath) {
+    csdscheduler.init_scheduler(csdmanager);
+    bufma.InitBufferManager(csdscheduler);
+    this->dirName = dirName;
+    this->jsonPath = jsonPath;
+  }
   void StartEngine();
-
- private:
-  Logger logger;
-  Socket socketHandler;
 };

@@ -17,30 +17,6 @@
 using namespace rapidjson;
 using namespace std;
 
-void TableManager::print_TableManager() {
-  unordered_map<string, struct Table>::iterator it;
-
-  for (it = m_TableManager.begin(); it != m_TableManager.end(); it++) {
-    struct Table tmp = it->second;
-    std::cout << "tablename : " << tmp.tablename << std::endl;
-    std::cout << "Column name     Type  Length Offset" << std::endl;
-    vector<struct ColumnSchema>::iterator itor = tmp.Schema.begin();
-
-    for (; itor != tmp.Schema.end(); itor++) {
-      std::cout << left << setw(15) << (*itor).column_name << " " << left
-                << setw(5) << (*itor).type << " " << left << setw(6)
-                << (*itor).length << " " << left << setw(5) << (*itor).offset
-                << std::endl;
-    }
-
-    vector<struct SSTFile>::iterator itor2 = tmp.SSTList.begin();
-
-    for (; itor2 != tmp.SSTList.end(); itor2++) {
-      std::cout << "SST filename : " << (*itor2).filename << std::endl;
-    }
-  }
-}
-
 vector<string> TableManager::get_sstlist(string tablename) {
   vector<string> sstlist;
   for (int i = 0; i < m_TableManager[tablename].SSTList.size(); i++) {
@@ -49,7 +25,7 @@ vector<string> TableManager::get_sstlist(string tablename) {
   return sstlist;
 }
 
-int TableManager::init_TableManager() {
+void TableManager::init_TableManager() {
   logger.info("init_TableManager");
   int json_fd;
   string json = "";
@@ -117,8 +93,6 @@ int TableManager::init_TableManager() {
     }
     m_TableManager.insert({tbl.tablename, tbl});
   }
-
-  return 0;
 }
 
 int TableManager::get_table_schema(std::string tablename,

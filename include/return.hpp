@@ -24,7 +24,6 @@ struct MergeResult {
   int row_count;
   vector<string> colNames;
   unordered_map<string, vector<string>> data;
-  map<string, vector<std::any>> groupby_map;
 
   MergeResult() {}
   // merge.cc의 최초 생성자
@@ -39,13 +38,9 @@ struct MergeResult {
         data(data_),
         colNames(colNames_) {
     row_count = 0;
-    groupby_map.clear();
   }
 
-  void InitMergeResult() {
-    row_count = 0;
-    groupby_map.clear();
-  }
+  void InitMergeResult() { row_count = 0; }
 };
 
 struct vectortype_r {

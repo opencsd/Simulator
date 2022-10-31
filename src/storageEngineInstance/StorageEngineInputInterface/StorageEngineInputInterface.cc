@@ -1,7 +1,5 @@
 #include "StorageEngineInputInterface.hpp"
 
-#include "keti_util.hpp"
-
 // Include C++ Header
 #include <iostream>
 #include <memory>
@@ -10,19 +8,6 @@
 #include <vector>
 
 // Include gRPC Header
-#include <google/protobuf/empty.pb.h>
-#include <grpcpp/grpcpp.h>
-
-using grpc::Server;
-using grpc::ServerBuilder;
-using grpc::ServerContext;
-using grpc::ServerReaderWriter;
-using grpc::Status;
-using snippetsample::Request;
-using snippetsample::Result;
-using snippetsample::Snippet;
-using snippetsample::SnippetRequest;
-using snippetsample::SnippetSample;
 
 using namespace std;
 
@@ -251,55 +236,48 @@ void EngineModule::AppendDependencyProjection(
   }
 }
 
-void EngineModule::testrun(string dirname, string jsonPath) {
-  cout << "Run Engine Module" << endl;
+void EngineModule::StartEngine() {
+  logger.info("Run Engine Module");
   tblManager.init_TableManager();
-  cout << "TableManager Init Done" << endl;
   time_t st = time(0);
   queue<SnippetStruct> snippetqueue;
   string tmpstring = "";
-  cout << dirname[dirname.size() - 1] << endl;
-  if (dirname[dirname.size() - 1] == '/') {
-    cout << "dirname end error" << endl;
+  cout << dirName[dirName.size() - 1] << endl;
+  if (dirName[dirName.size() - 1] == '/') {
     string tmpdirName = "";
-    for (int i = 0; i < dirname.size() - 1; i++) {
-      tmpdirName = tmpdirName + dirname[i];
+    for (int i = 0; i < dirName.size() - 1; i++) {
+      tmpdirName = tmpdirName + dirName[i];
     }
-    dirname = tmpdirName;
+    dirName = tmpdirName;
   }
-  cout << dirname << endl;
+  cout << dirName << endl;
 
-  cout << dirname[dirname.size() - 1] << "  "
-       << int(dirname[dirname.size() - 1]) << endl;
-  cout << dirname[dirname.size() - 2] << "  "
-       << int(dirname[dirname.size() - 2]) << endl;
+  cout << dirName[dirName.size() - 1] << "  "
+       << int(dirName[dirName.size() - 1]) << endl;
+  cout << dirName[dirName.size() - 2] << "  "
+       << int(dirName[dirName.size() - 2]) << endl;
 
-  if (int(dirname[dirname.size() - 2]) > 47 &&
-      int(dirname[dirname.size() - 2]) < 58) {
-    cout << "dirname number Setting case 1" << endl;
-    cout << dirname << endl;
-    tmpstring = dirname[dirname.size() - 2] + dirname[dirname.size() - 1];
+  if (int(dirName[dirName.size() - 2]) > 47 &&
+      int(dirName[dirName.size() - 2]) < 58) {
+    tmpstring = dirName[dirName.size() - 2] + dirName[dirName.size() - 1];
   } else {
     string zero_str = "0";
-    cout << "dirname number Setting case 2" << endl;
-    cout << dirname << endl;
-    cout << dirname[dirname.size() - 1] << "  "
-         << int(dirname[dirname.size() - 1]) << endl;
-    cout << "Will Be " << zero_str + dirname[dirname.size() - 1] << endl;
-    tmpstring = zero_str + dirname[dirname.size() - 1];
+    cout << dirName << endl;
+    cout << dirName[dirName.size() - 1] << "  "
+         << int(dirName[dirName.size() - 1]) << endl;
+    tmpstring = zero_str + dirName[dirName.size() - 1];
   }
 
   cout << tmpstring << endl;
 
   int filecount = 0;
-  for (const auto &file : filesystem::directory_iterator(dirname)) {
+  for (const auto &file : filesystem::directory_iterator(dirName)) {
     filecount++;
   }
 
   for (int i = 0; i < filecount; i++) {
     string filename =
-        dirname + "/tpch" + tmpstring + "-" + to_string(i) + ".json";
-    cout << "read " << filename << endl;
+        dirName + "/tpch" + tmpstring + "-" + to_string(i) + ".json";
     int json_fd;
     string json = "";
     json_fd = open(filename.c_str(), O_RDONLY);
@@ -384,11 +362,10 @@ void EngineModule::testrun(string dirname, string jsonPath) {
 
     snippetqueue.push(snippetdata);
   }
-  cout << "Read Snippet Done" << endl;
+  logger.info("Read Snippet Done");
   string LQNAME = snippetqueue.back().tableAlias;
   int Queryid = snippetqueue.back().query_id;
-
-  cout << "Query to CSD" << endl;
+  logger.info("Query to CSD");
   snippetmanager.NewQuery(snippetqueue, bufma, tblManager, csdscheduler,
                           csdmanager);
   cout << "GET DATA to CSD" << endl;

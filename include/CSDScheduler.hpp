@@ -17,6 +17,7 @@
 #include "document.h"
 #include "keti_util.hpp"
 #include "prettywriter.h"
+#include "socket.hpp"
 #include "stringbuffer.h"
 #include "writer.h"
 

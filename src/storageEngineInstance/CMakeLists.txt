@@ -11,17 +11,12 @@ add_subdirectory(buffer_manager)
 add_subdirectory(CSDManager)
 add_subdirectory(SnippetScheduler)
 add_subdirectory(MergeQueryManager)
-add_subdirectory(QueryExecutor)
 add_subdirectory(SnippetManager)
 add_subdirectory(StorageEngineInputInterface)
 add_subdirectory(TableAccess)
 add_subdirectory(TableManager)
 
-
-
-add_dependencies(QueryExecutor TableAccess TableManager)
-
-add_dependencies(SnippetScheduler CSDManager WALManager)
+add_dependencies(SnippetScheduler CSDManager)
 add_dependencies(buffer_manager TableManager SnippetScheduler)
 add_dependencies(MergeQueryManager buffer_manager)
 add_dependencies(SnippetManager MergeQueryManager)

@@ -207,7 +207,7 @@ struct TableInfo {
   }
 };
 
-class BufferManager {
+class BufferManager : public Socket {
  public:
   BufferManager() {}
   BufferManager(Scheduler &scheduler) { InitBufferManager(scheduler); }
@@ -232,6 +232,29 @@ class BufferManager {
                     unordered_map<string, vector<vectortype>> table_data_);
   int DeleteTableData(int qid, string tname);
   int EndQuery(int qid);
+  virtual void Accept(int client_fd) override {
+    std::string json = "";
+    int njson;
+    size_t ljson;
+
+    recv(client_fd, &ljson, sizeof(ljson), 0);
+
+    char buffer[ljson] = {0};
+
+    while (1) {
+      if ((njson = recv(client_fd, buffer, BUFF_SIZE - 1, 0)) == -1) {
+        perror("read");
+        exit(1);
+      }
+      ljson -= njson;
+      buffer[njson] = '\0';
+      json += buffer;
+
+      if (ljson == 0) break;
+    }
+
+    BlockResultQueue.push_work(BlockResult(json.c_str()));
+  }
 
   unordered_map<int, struct Query_Buffer *> my_buffer_m() {
     return this->m_BufferManager;
