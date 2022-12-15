@@ -6,6 +6,9 @@ jobs:
   build:
     runs-on: backup
     steps:
-    - uses: actions/checkout@v2
-    - name: git pull
-      run: git pull
+    - uses: actions/checkout@v3
+    - name: getPWD
+      run: pwd
+    - name: ls
+      run: ls -la
+
