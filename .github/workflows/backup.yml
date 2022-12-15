@@ -8,5 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: pullAll
-      run: git pull
-
+      run: |
+          git fetch --all
+          git reset --hard origin/master
+          git pull origin master
